@@ -26,6 +26,35 @@
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 5px; border: 2px solid #050505; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
 
+        /* --- PRELOADER STYLES (NEW) --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000000; z-index: 9999; /* সবার উপরে থাকবে */
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease-out; /* স্মুথ ট্রানজিশন */
+        }
+        .loader-logo {
+            font-size: 3rem; font-weight: 800; color: white; margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+        .loader-logo span {
+            background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .loading-bar {
+            width: 200px; height: 4px; background: #222; border-radius: 2px; overflow: hidden; position: relative;
+        }
+        .loading-bar::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 50%; height: 100%;
+            background: var(--primary-gradient);
+            animation: slide 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.95); opacity: 0.8; } }
+        @keyframes slide { 0% { left: -50%; } 100% { left: 100%; } }
+        
+        /* Hide content initially */
+        body.loading { overflow: hidden; } 
+
+
         /* Backgrounds */
         .bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
         .bg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.2s ease-in-out; }
@@ -85,11 +114,16 @@
             .hero-title { font-size: 2.8rem; }
             section { min-height: auto; padding: 6rem 1.5rem 4rem 1.5rem; }
             #home { min-height: 100dvh; }
-            .grid { grid-template-columns: 1fr 1fr; } /* Mobile 2 columns */
+            .grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
-<body>
+<body class="loading">
+
+    <div id="preloader">
+        <div class="loader-logo">⚡ Mika<span>Tools</span></div>
+        <div class="loading-bar"></div>
+    </div>
 
     <div class="bg-container">
         <div id="bg-1" class="bg-layer bg-home active"></div>
@@ -263,7 +297,20 @@
         const bgHome = document.getElementById('bg-1');
         const bgTools = document.getElementById('bg-2');
         const navbar = document.getElementById('navbar');
+        const preloader = document.getElementById('preloader');
 
+        // --- PRELOADER LOGIC ---
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                preloader.style.opacity = '0'; // Fade out
+                setTimeout(() => {
+                    preloader.style.display = 'none'; // Remove
+                    document.body.classList.remove('loading'); // Allow scroll
+                }, 800); // Wait for transition
+            }, 2500); // 2.5 seconds delay
+        });
+
+        // --- SCROLL & BG LOGIC ---
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
