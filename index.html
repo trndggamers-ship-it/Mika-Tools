@@ -6,62 +6,54 @@
     <title>Mika Tools - Next Gen Utilities</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* --- MIGHTY STYLE DARK THEME (FULL COVERAGE) --- */
+        /* --- CORE STYLES --- */
         :root {
-            --bg-dark: #050505;
             --text-white: #ffffff;
-            --text-gray: #a1a1aa;
+            --text-gray: #e2e8f0;
             --primary-gradient: linear-gradient(90deg, #ff0080, #7928ca);
-            --card-bg: rgba(0, 0, 0, 0.6); /* Darker transparent bg */
-            --border-color: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(0, 0, 0, 0.4);
+            --border-light: rgba(255, 255, 255, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        
-        /* --- CUSTOM SCROLLBAR (ডার্ক স্ক্রলবার) --- */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0a0c; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #333; 
-            border-radius: 5px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555; 
-        }
 
-        /* --- BODY BACKGROUND (ফিক্সড ইমেজ) --- */
         body {
-            background-color: var(--bg-dark);
             color: var(--text-white);
-            /* ইমেজটি এখানে সেট করা হলো যাতে পুরো পেজ কাভার করে */
-            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.9)), 
-                              url('https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2070&auto=format&fit=crop');
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-image 0.5s ease-in-out; /* ব্যাকগ্রাউন্ড স্মুথভাবে চেঞ্জ হবে */
             background-size: cover;
             background-position: center;
-            background-attachment: fixed; /* স্ক্রল করলে ইমেজ নড়বে না */
-            min-height: 100vh;
+            background-attachment: fixed;
+            background-color: #050505;
+        }
+
+        /* --- BACKGROUND CLASSES --- */
+        /* হোমপেজের ব্যাকগ্রাউন্ড (আগেরটি) */
+        body.bg-home {
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
+                              url('https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2070&auto=format&fit=crop');
+        }
+
+        /* টুলস পেজের ব্যাকগ্রাউন্ড (আপনার আপলোড করা নতুন ছবি) */
+        body.bg-tools {
+            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), 
+                              url('bg-tools.jpg'); /* গিটহাবে আপলোড করা ছবির নাম */
         }
 
         /* Navbar */
         nav {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 2rem;
-            z-index: 10;
+            position: absolute; top: 0; left: 0; width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 2rem; z-index: 50;
         }
-        .logo { font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; }
+        .logo { font-size: 1.5rem; font-weight: 800; cursor: pointer; }
         .logo span { background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* Hero Section */
-        .hero {
-            min-height: 70vh; /* উচ্চতা একটু কমানো হলো যাতে টুলসগুলো সহজে চোখে পড়ে */
-            display: flex;
+        /* --- HERO SECTION (Home View) --- */
+        #home-view {
+            height: 100vh;
+            display: flex; /* শুরুতে এটি দেখা যাবে */
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -69,100 +61,82 @@
             padding: 1rem;
         }
 
-        .hero h1 {
-            font-size: 4rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            max-width: 900px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        .hero-title {
+            font-size: 4.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.5);
         }
-        
-        .hero p {
-            font-size: 1.25rem;
-            color: #e2e8f0;
-            max-width: 600px;
+        .hero-desc { font-size: 1.25rem; color: var(--text-gray); max-width: 600px; margin-bottom: 2.5rem; }
+
+        .cta-btn {
+            padding: 14px 40px;
+            background: #ffffff; color: #000;
+            font-weight: 700; font-size: 1rem;
+            border-radius: 50px; text-decoration: none;
+            transition: 0.3s; cursor: pointer;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+        .cta-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,255,255,0.5); }
+
+        /* --- TOOLS SECTION (Hidden initially) --- */
+        #tools-view {
+            display: none; /* শুরুতে লুকানো থাকবে */
+            padding: 8rem 2rem 4rem; /* উপরে জায়গা রাখা হয়েছে যাতে ন্যাভবার ঢাকা না পড়ে */
+            max-width: 1200px; margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        .section-title {
+            text-align: center; font-size: 2.5rem; margin-bottom: 3rem; font-weight: 700;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
-        .cta-btn {
-            margin-top: 2rem;
-            padding: 12px 30px;
-            background: var(--text-white);
-            color: #000;
-            font-weight: 700;
-            border-radius: 50px;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        .cta-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,255,255,0.4); }
-
-        /* Tools Grid Section */
-        .tools-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            padding-bottom: 5rem; /* ফুটার যাতে গায়ে না লেগে থাকে */
-        }
-        
         .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;
         }
 
         .card {
-            background: var(--card-bg); /* স্বচ্ছ কালো */
-            backdrop-filter: blur(10px); /* গ্লাস ইফেক্ট */
-            padding: 2.5rem;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            transition: 0.3s;
-            cursor: pointer;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 2.5rem; border-radius: 20px;
+            border: 1px solid var(--border-light);
+            transition: 0.3s; cursor: pointer;
             box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
         }
 
         .card:hover {
-            transform: translateY(-10px);
-            border-color: #ff0080;
-            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-10px); border-color: #ff0080; background: rgba(0,0,0,0.6);
         }
 
         .card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .card p { color: var(--text-gray); font-size: 0.95rem; }
+        .card p { color: #cbd5e1; font-size: 0.95rem; }
 
-        footer { 
-            text-align: center; 
-            padding: 2rem; 
-            color: var(--text-gray); 
-            background: rgba(0,0,0,0.8); /* ফুটারের পেছনে একটু গাঢ় রঙ */
-            border-top: 1px solid var(--border-color);
+        /* Footer */
+        footer {
+            text-align: center; padding: 2rem; color: rgba(255,255,255,0.5); font-size: 0.9rem;
+            position: fixed; bottom: 0; width: 100%; pointer-events: none; /* ফুটার ফিক্সড থাকবে কিন্তু কাজে বাধা দেবে না */
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .hero { min-height: 60vh; }
-        }
-
+        @media (max-width: 768px) { .hero-title { font-size: 2.8rem; } }
     </style>
 </head>
-<body>
+<body class="bg-home">
 
     <nav>
-        <div class="logo">⚡ Mika<span>Tools</span></div>
+        <div class="logo" onclick="goHome()">⚡ Mika<span>Tools</span></div>
     </nav>
 
-    <div class="hero">
-        <h1>Supercharge your work <br> with <span style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Smart Tools.</span></h1>
-        <p>
+    <section id="home-view">
+        <h1 class="hero-title">Supercharge your work <br> with <span style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Smart Tools.</span></h1>
+        <p class="hero-desc">
             Fast, secure, and beautiful tools designed for the modern web. 
             No installation required.
         </p>
-        <a href="#tools" class="cta-btn">Explore Tools</a>
-    </div>
+        <div class="cta-btn" onclick="goToTools()">Explore Tools</div>
+    </section>
 
-    <div id="tools" class="tools-section">
+    <section id="tools-view">
+        <h2 class="section-title">Select a Tool</h2>
         <div class="grid">
             <div class="card">
                 <h3>📱 QR Generator</h3>
@@ -176,12 +150,41 @@
                 <h3>🚀 Speed Test</h3>
                 <p>Check your internet speed directly from here.</p>
             </div>
+            <div class="card">
+                <h3>📂 Image Converter</h3>
+                <p>Convert JPG to PNG, PDF and more in seconds.</p>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <footer>
-        &copy; 2024 Mika Tools. Crafted for the future.
-    </footer>
+    <footer>&copy; 2024 Mika Tools.</footer>
+
+    <script>
+        // জাভাস্ক্রিপ্ট দিয়ে পেজ এবং ব্যাকগ্রাউন্ড চেঞ্জ করার লজিক
+        const body = document.body;
+        const homeView = document.getElementById('home-view');
+        const toolsView = document.getElementById('tools-view');
+
+        function goToTools() {
+            // 1. হোমপেজ লুকাও
+            homeView.style.display = 'none';
+            // 2. টুলস পেজ দেখাও
+            toolsView.style.display = 'block';
+            // 3. ব্যাকগ্রাউন্ড ক্লাস চেঞ্জ করো (bg-home -> bg-tools)
+            body.classList.remove('bg-home');
+            body.classList.add('bg-tools');
+            // 4. পেজের শুরুতে নিয়ে যাও
+            window.scrollTo(0,0);
+        }
+
+        function goHome() {
+            // উল্টো কাজ: হোমপেজে ফিরে আসা
+            toolsView.style.display = 'none';
+            homeView.style.display = 'flex';
+            body.classList.remove('bg-tools');
+            body.classList.add('bg-home');
+        }
+    </script>
 
 </body>
 </html>
