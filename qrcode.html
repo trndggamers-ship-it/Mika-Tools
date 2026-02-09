@@ -14,6 +14,8 @@
             --glass: rgba(255, 255, 255, 0.05);
             --border: rgba(255, 255, 255, 0.1);
             --text: #ffffff;
+            --radius-box: 30px; /* বড় কার্ডের জন্য রাউন্ড */
+            --radius-input: 50px; /* ইনপুট ও বাটনে ক্যাপসুল শেপ */
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -27,19 +29,18 @@
 
         /* --- HEADER --- */
         nav {
-            width: 95%; max-width: 1300px; margin-top: 15px;
+            width: 95%; max-width: 1300px; margin-top: 20px;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem 2rem; border-radius: 50px;
+            padding: 1rem 2rem; border-radius: var(--radius-input);
             background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
             border: 1px solid var(--border); z-index: 10;
         }
         .logo { font-size: 1.5rem; font-weight: 800; text-decoration: none; color: white; }
         .logo span { background: linear-gradient(90deg, #ff0080, #7928ca); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* BMC Button */
         .bmc-btn {
             display: flex; align-items: center; gap: 8px;
-            background: rgba(255, 255, 255, 0.1); padding: 8px 16px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: var(--radius-input);
             text-decoration: none; color: #fff; font-size: 0.9rem; font-weight: 600;
             border: 1px solid rgba(255, 255, 255, 0.2); transition: 0.3s;
         }
@@ -49,7 +50,7 @@
         /* --- MAIN STUDIO LAYOUT --- */
         .studio-container {
             display: grid;
-            grid-template-columns: 1.5fr 1fr; /* বামে এডিটর বড়, ডানে প্রিভিউ ছোট */
+            grid-template-columns: 1.5fr 1fr;
             gap: 30px;
             width: 95%; max-width: 1200px;
             margin: 40px auto;
@@ -58,29 +59,63 @@
         /* Left Panel: Editor */
         .editor-panel {
             background: var(--glass); backdrop-filter: blur(20px);
-            padding: 30px; border-radius: 20px; border: 1px solid var(--border);
+            padding: 35px; border-radius: var(--radius-box); border: 1px solid var(--border);
             display: flex; flex-direction: column; gap: 25px;
         }
 
-        .section-title { font-size: 1.1rem; font-weight: 600; color: #aaa; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .section-title { font-size: 1.1rem; font-weight: 600; color: #aaa; margin-bottom: 15px; padding-left: 10px; }
 
-        /* Input Styling */
-        .input-group label { display: block; font-size: 0.9rem; margin-bottom: 8px; color: #ccc; }
-        input[type="text"], select, input[type="file"] {
-            width: 100%; padding: 12px; background: rgba(0,0,0,0.4);
-            border: 1px solid #444; border-radius: 8px; color: white; outline: none; transition: 0.3s;
+        /* ROUNDED INPUTS styling */
+        .input-group label { display: block; font-size: 0.9rem; margin-bottom: 8px; color: #ccc; margin-left: 10px; }
+        
+        input[type="text"], select {
+            width: 100%; padding: 15px 25px; /* Text যাতে রাউন্ডের সাথে লেগে না যায় */
+            background: rgba(0,0,0,0.4);
+            border: 1px solid #444; 
+            border-radius: var(--radius-input); /* ক্যাপসুল শেপ */
+            color: white; outline: none; transition: 0.3s;
+            font-size: 1rem;
+            cursor: pointer;
         }
-        input[type="text"]:focus { border-color: var(--accent); }
+        
+        /* File Input Customization */
+        input[type="file"] {
+            width: 100%; padding: 10px; 
+            background: rgba(0,0,0,0.4);
+            border: 1px dashed #555; 
+            border-radius: var(--radius-box); /* বড় রাউন্ড */
+            color: #aaa; cursor: pointer;
+        }
+
+        input[type="text"]:focus, select:focus { border-color: var(--accent); background: rgba(0,0,0,0.6); }
 
         /* Color Pickers Grid */
-        .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        input[type="color"] { width: 100%; height: 40px; border: none; background: none; cursor: pointer; border-radius: 8px; }
+        .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        input[type="color"] { 
+            width: 100%; height: 50px; border: none; background: none; cursor: pointer; 
+            border-radius: var(--radius-input); /* কালার বক্সও রাউন্ডেড */
+            padding: 0; overflow: hidden;
+        }
+        /* কালার পিকারের ভেতরের অংশ রাউন্ড করার জন্য */
+        ::-webkit-color-swatch-wrapper { padding: 0; }
+        ::-webkit-color-swatch { border: 1px solid #555; border-radius: var(--radius-input); }
 
-        /* Right Panel: Preview (Sticky) */
+        /* Templates Buttons */
+        .template-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+        .template-btn {
+            padding: 10px 20px; background: #222; border: 1px solid #444; color: white;
+            border-radius: var(--radius-input); /* বাটনগুলোও গোল */
+            cursor: pointer; font-size: 0.9rem; transition: 0.2s;
+        }
+        .template-btn:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
+
+        /* Right Panel: Preview */
         .preview-panel {
             position: sticky; top: 20px; height: fit-content;
-            background: #ffffff; /* White card for QR pop */
-            border-radius: 20px; padding: 30px;
+            background: #ffffff;
+            border-radius: var(--radius-box); /* বড় রাউন্ডেড প্রিভিউ কার্ড */
+            padding: 40px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center;
         }
@@ -88,32 +123,28 @@
         #qrcode { margin: 20px 0; }
         
         .download-btn {
-            width: 100%; padding: 15px; background: linear-gradient(90deg, #ff0080, #7928ca);
-            color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem;
+            width: 100%; padding: 18px; background: linear-gradient(90deg, #ff0080, #7928ca);
+            color: white; border: none; 
+            border-radius: var(--radius-input); /* রাউন্ডেড বাটন */
+            font-weight: 700; font-size: 1.1rem;
             cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(255, 0, 128, 0.3);
         }
         .download-btn:hover { transform: scale(1.02); }
-
-        /* Templates (Mini Buttons) */
-        .template-grid { display: flex; gap: 10px; flex-wrap: wrap; }
-        .template-btn {
-            padding: 8px 15px; background: #222; border: 1px solid #444; color: white;
-            border-radius: 20px; cursor: pointer; font-size: 0.8rem; transition: 0.2s;
-        }
-        .template-btn:hover { background: var(--accent); border-color: var(--accent); }
+        
+        #file-ext { margin-bottom: 15px; background: #f0f0f0; color: #333; border: none; }
 
         /* Bottom Back Button */
         .bottom-nav { margin: 40px 0; text-align: center; width: 100%; }
         .back-btn-bottom {
-            text-decoration: none; color: #aaa; font-weight: 600; padding: 10px 30px;
-            border: 1px solid #444; border-radius: 30px; transition: 0.3s;
+            text-decoration: none; color: #aaa; font-weight: 600; padding: 12px 35px;
+            border: 1px solid #444; border-radius: var(--radius-input); transition: 0.3s;
         }
         .back-btn-bottom:hover { background: white; color: black; }
 
         /* Mobile Responsive */
         @media (max-width: 800px) {
             .studio-container { grid-template-columns: 1fr; }
-            .preview-panel { order: -1; margin-bottom: 20px; } /* Mobile এ প্রিভিউ আগে দেখাবে */
+            .preview-panel { order: -1; margin-bottom: 20px; padding: 20px; }
         }
     </style>
 </head>
@@ -130,7 +161,7 @@
     <div class="studio-container">
         
         <div class="editor-panel">
-            <h2 style="margin-bottom: 10px;">Design Your QR Code</h2>
+            <h2 style="margin-bottom: 10px; margin-left: 10px;">Design Your QR Code</h2>
             
             <div class="input-group">
                 <label>Website URL or Text</label>
@@ -141,9 +172,9 @@
                 <div class="section-title">Quick Templates</div>
                 <div class="template-grid">
                     <button class="template-btn" onclick="setTemplate('classic')">Classic</button>
-                    <button class="template-btn" onclick="setTemplate('modern')">Modern (Blue)</button>
-                    <button class="template-btn" onclick="setTemplate('love')">Love (Pink)</button>
-                    <button class="template-btn" onclick="setTemplate('leaf')">Nature (Green)</button>
+                    <button class="template-btn" onclick="setTemplate('modern')">Modern Blue</button>
+                    <button class="template-btn" onclick="setTemplate('love')">Love Pink</button>
+                    <button class="template-btn" onclick="setTemplate('leaf')">Nature Green</button>
                 </div>
             </div>
 
@@ -190,25 +221,26 @@
                 <div class="section-title">Add Logo</div>
                 <div class="input-group">
                     <input type="file" id="logo-file" accept="image/*" onchange="handleLogo()">
-                    <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">Upload a PNG logo for best results.</p>
+                    <p style="font-size: 0.8rem; color: #666; margin-top: 8px; margin-left: 10px;">Upload a PNG logo for best results.</p>
                 </div>
             </div>
 
         </div>
 
         <div class="preview-panel">
-            <h3 style="color: #333; margin-bottom: 10px;">Live Preview</h3>
+            <h3 style="color: #333; margin-bottom: 20px;">Live Preview</h3>
+            
             <div id="qrcode"></div>
             
-            <div style="margin-top: 20px; width: 100%;">
-                <select id="file-ext" style="background: #f1f1f1; color: #333; margin-bottom: 10px;">
+            <div style="margin-top: 30px; width: 100%;">
+                <select id="file-ext">
                     <option value="png">Download as PNG</option>
                     <option value="jpeg">Download as JPEG</option>
                     <option value="svg">Download as SVG</option>
                 </select>
                 <button onclick="downloadQR()" class="download-btn">Download QR Code</button>
             </div>
-            <p style="color: #888; font-size: 0.8rem; margin-top: 15px;">High Quality • Vector Ready</p>
+            <p style="color: #999; font-size: 0.8rem; margin-top: 15px;">High Quality • Vector Ready</p>
         </div>
 
     </div>
@@ -218,7 +250,6 @@
     </div>
 
     <script>
-        // ডিফল্ট লোগো এবং ডাটা
         let userLogo = "";
         
         const qrCode = new QRCodeStyling({
@@ -232,10 +263,8 @@
             imageOptions: { crossOrigin: "anonymous", margin: 10 }
         });
 
-        // শুরুতে রেন্ডার করা
         qrCode.append(document.getElementById("qrcode"));
 
-        // মেইন আপডেট ফাংশন (লাইভ আপডেট হবে)
         function updateQR() {
             const text = document.getElementById("qr-text").value || "https://mikatools.com";
             const colorDots = document.getElementById("color-dots").value;
@@ -245,22 +274,13 @@
 
             qrCode.update({
                 data: text,
-                dotsOptions: {
-                    color: colorDots,
-                    type: dotStyle
-                },
-                cornersSquareOptions: {
-                    type: cornerStyle,
-                    color: colorDots // কর্নারের কালার ডটের সাথে মিলবে
-                },
-                backgroundOptions: {
-                    color: colorBg
-                },
+                dotsOptions: { color: colorDots, type: dotStyle },
+                cornersSquareOptions: { type: cornerStyle, color: colorDots },
+                backgroundOptions: { color: colorBg },
                 image: userLogo
             });
         }
 
-        // লোগো হ্যান্ডলিং
         function handleLogo() {
             const file = document.getElementById("logo-file").files[0];
             if (file) {
@@ -273,17 +293,11 @@
             }
         }
 
-        // টেমপ্লেট ফাংশন (এক ক্লিকে স্টাইল চেঞ্জ)
         function setTemplate(type) {
-            if (type === 'classic') {
-                setValues("#000000", "#ffffff", "square", "square");
-            } else if (type === 'modern') {
-                setValues("#2563eb", "#ffffff", "dots", "extra-rounded");
-            } else if (type === 'love') {
-                setValues("#ff0080", "#ffe6f2", "rounded", "dot");
-            } else if (type === 'leaf') {
-                setValues("#10b981", "#ecfdf5", "classy", "extra-rounded");
-            }
+            if (type === 'classic') setValues("#000000", "#ffffff", "square", "square");
+            else if (type === 'modern') setValues("#2563eb", "#ffffff", "dots", "extra-rounded");
+            else if (type === 'love') setValues("#ff0080", "#ffe6f2", "rounded", "dot");
+            else if (type === 'leaf') setValues("#10b981", "#ecfdf5", "classy", "extra-rounded");
         }
 
         function setValues(dotCol, bgCol, dStyle, cStyle) {
@@ -294,7 +308,6 @@
             updateQR();
         }
 
-        // ডাউনলোড ফাংশন
         function downloadQR() {
             const ext = document.getElementById("file-ext").value;
             qrCode.download({ name: "mika-qr-code", extension: ext });
