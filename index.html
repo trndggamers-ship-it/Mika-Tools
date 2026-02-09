@@ -6,28 +6,48 @@
     <title>Mika Tools - Next Gen Utilities</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* --- MIGHTY STYLE DARK THEME (IMAGE VERSION) --- */
+        /* --- MIGHTY STYLE DARK THEME (FULL COVERAGE) --- */
         :root {
             --bg-dark: #050505;
             --text-white: #ffffff;
             --text-gray: #a1a1aa;
             --primary-gradient: linear-gradient(90deg, #ff0080, #7928ca);
-            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-bg: rgba(0, 0, 0, 0.6); /* Darker transparent bg */
             --border-color: rgba(255, 255, 255, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
+        /* --- CUSTOM SCROLLBAR (ডার্ক স্ক্রলবার) --- */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0c; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+
+        /* --- BODY BACKGROUND (ফিক্সড ইমেজ) --- */
         body {
             background-color: var(--bg-dark);
             color: var(--text-white);
+            /* ইমেজটি এখানে সেট করা হলো যাতে পুরো পেজ কাভার করে */
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.9)), 
+                              url('https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* স্ক্রল করলে ইমেজ নড়বে না */
+            min-height: 100vh;
         }
 
         /* Navbar */
         nav {
-            position: absolute; /* ইমেজের উপরে থাকবে */
-            top: 0;
-            left: 0;
             width: 100%;
             display: flex;
             justify-content: space-between;
@@ -38,24 +58,15 @@
         .logo { font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; }
         .logo span { background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* Hero Section with Background Image */
+        /* Hero Section */
         .hero {
-            height: 80vh; /* স্ক্রিনের ৮০% জায়গা নেবে */
+            min-height: 70vh; /* উচ্চতা একটু কমানো হলো যাতে টুলসগুলো সহজে চোখে পড়ে */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             padding: 1rem;
-            position: relative;
-            
-            /* BACKGROUND IMAGE SETTINGS */
-            /* আমি একটি ডেমো 3D ইমেজ দিয়েছি, আপনি চাইলে লিংক পরিবর্তন করতে পারেন */
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)), 
-                        url('https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
         }
 
         .hero h1 {
@@ -64,7 +75,7 @@
             line-height: 1.1;
             margin-bottom: 1.5rem;
             max-width: 900px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.5); /* টেক্সট যাতে ইমেজের উপর ফুটে ওঠে */
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
         
         .hero p {
@@ -89,10 +100,9 @@
         /* Tools Grid Section */
         .tools-section {
             max-width: 1200px;
-            margin: -80px auto 0; /* ইমেজ সেকশনের একটু উপরে উঠে থাকবে */
+            margin: 0 auto;
             padding: 2rem;
-            position: relative;
-            z-index: 5;
+            padding-bottom: 5rem; /* ফুটার যাতে গায়ে না লেগে থাকে */
         }
         
         .grid {
@@ -102,7 +112,8 @@
         }
 
         .card {
-            background: #0f0f11; /* সলিড ডার্ক কালার */
+            background: var(--card-bg); /* স্বচ্ছ কালো */
+            backdrop-filter: blur(10px); /* গ্লাস ইফেক্ট */
             padding: 2.5rem;
             border-radius: 20px;
             border: 1px solid var(--border-color);
@@ -114,17 +125,24 @@
         .card:hover {
             transform: translateY(-10px);
             border-color: #ff0080;
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
         .card p { color: var(--text-gray); font-size: 0.95rem; }
 
-        footer { text-align: center; padding: 3rem; color: var(--text-gray); margin-top: 3rem;}
+        footer { 
+            text-align: center; 
+            padding: 2rem; 
+            color: var(--text-gray); 
+            background: rgba(0,0,0,0.8); /* ফুটারের পেছনে একটু গাঢ় রঙ */
+            border-top: 1px solid var(--border-color);
+        }
 
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
-            .tools-section { margin-top: 0; }
+            .hero { min-height: 60vh; }
         }
 
     </style>
