@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator - Mika Tools</title>
+    <title>Pro QR Generator - Mika Tools</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     
     <style>
-        /* --- SAME DESIGN STYLE --- */
         :root {
             --text-white: #ffffff;
             --primary-gradient: linear-gradient(90deg, #ff0080, #7928ca);
@@ -22,14 +21,11 @@
             color: var(--text-white);
             min-height: 100vh;
             display: flex; flex-direction: column; align-items: center;
-            
-            /* Background Image */
-            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)), 
-                              url('bg-tools.jpg.png'); /* আপনার ব্যাকগ্রাউন্ড ইমেজের নাম */
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)), url('bg-tools.jpg.png');
             background-size: cover; background-position: center; background-attachment: fixed;
         }
 
-        /* Navbar */
+        /* --- HEADER (BMC Button) --- */
         nav {
             width: 90%; max-width: 1200px; margin-top: 20px;
             display: flex; justify-content: space-between; align-items: center;
@@ -40,90 +36,183 @@
         .logo { font-size: 1.5rem; font-weight: 800; text-decoration: none; color: white; }
         .logo span { background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .back-btn {
-            text-decoration: none; color: white; font-weight: 600;
-            padding: 8px 20px; border-radius: 30px; border: 1px solid var(--border-light);
-            transition: 0.3s;
+        /* BMC Button Style */
+        .bmc-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255, 255, 255, 0.1); padding: 8px 16px; border-radius: 30px;
+            text-decoration: none; color: #fff; font-size: 0.9rem; font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2); transition: 0.3s;
         }
-        .back-btn:hover { background: white; color: black; }
+        .bmc-btn:hover {
+            background: #FFDD00; color: #000; border-color: #FFDD00;
+            box-shadow: 0 0 15px rgba(255, 221, 0, 0.4);
+        }
+        .bmc-icon { width: 20px; height: 20px; }
 
-        /* Tool Container */
+        /* --- TOOL CONTAINER --- */
         .tool-container {
-            margin-top: 5rem; width: 90%; max-width: 600px;
+            margin-top: 3rem; width: 95%; max-width: 800px;
             background: var(--glass-bg); backdrop-filter: blur(15px);
-            padding: 3rem; border-radius: 20px; border: 1px solid var(--border-light);
+            padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-light);
             text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; gap: 20px;
         }
 
-        input {
-            width: 100%; padding: 15px; margin: 20px 0;
-            background: rgba(0,0,0,0.5); border: 1px solid #333;
-            color: white; border-radius: 10px; font-size: 1rem; outline: none;
+        /* Controls Grid */
+        .controls-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left;
         }
+        .control-group label { font-size: 0.9rem; color: #ccc; margin-bottom: 5px; display: block; }
         
-        .generate-btn {
+        input[type="text"], select, input[type="file"] {
+            width: 100%; padding: 12px; background: rgba(0,0,0,0.5); 
+            border: 1px solid #444; color: white; border-radius: 10px; outline: none;
+        }
+        input[type="color"] {
+            width: 100%; height: 45px; border: none; background: none; cursor: pointer;
+        }
+
+        .action-btn {
             width: 100%; padding: 15px; border: none; border-radius: 50px;
             background: var(--primary-gradient); color: white; font-weight: bold; font-size: 1rem;
-            cursor: pointer; transition: 0.3s;
+            cursor: pointer; transition: 0.3s; margin-top: 10px;
         }
-        .generate-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(255, 0, 128, 0.4); }
+        .action-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(255, 0, 128, 0.4); }
 
-        /* QR Result Box */
+        /* Result Area */
         #qr-result {
-            margin-top: 30px; padding: 20px; background: white; border-radius: 10px;
-            display: none; justify-content: center; align-items: center;
+            margin-top: 20px; padding: 20px; background: white; border-radius: 15px;
+            display: flex; justify-content: center; align-items: center;
             width: fit-content; margin-left: auto; margin-right: auto;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
         }
 
-        /* Mobile Fix */
-        @media (max-width: 768px) { .tool-container { padding: 2rem; margin-top: 3rem; } }
+        /* --- BOTTOM BACK BUTTON --- */
+        .bottom-nav { margin: 40px 0; }
+        .back-btn-bottom {
+            text-decoration: none; color: #aaa; font-weight: 600; font-size: 1rem;
+            border: 1px solid #444; padding: 10px 25px; border-radius: 30px; transition: 0.3s;
+        }
+        .back-btn-bottom:hover { background: white; color: black; }
+
+        /* Responsive */
+        @media (max-width: 600px) { .controls-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <nav>
         <a href="index.html" class="logo">⚡ Mika<span>Tools</span></a>
-        <a href="index.html" class="back-btn">← Back Home</a>
+        <a href="https://buymeacoffee.com/mika_ai" target="_blank" class="bmc-btn">
+            <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="" class="bmc-icon">
+            <span class="bmc-text">Buy me a coffee</span>
+        </a>
     </nav>
 
     <div class="tool-container">
-        <h1 style="margin-bottom: 10px;">QR Code Generator</h1>
-        <p style="color: #ccc; font-size: 0.9rem;">Enter any URL or Text to generate a QR Code instantly.</p>
+        <h1>Pro QR Generator</h1>
+        
+        <input type="text" id="qr-text" placeholder="Enter Website URL or Text (e.g., https://mikatools.com)">
 
-        <input type="text" id="qr-text" placeholder="Example: https://google.com">
-        <button onclick="generateQR()" class="generate-btn">Generate QR Code</button>
+        <div class="controls-grid">
+            <div class="control-group">
+                <label>Color (Dots)</label>
+                <input type="color" id="color-dots" value="#000000">
+            </div>
+            <div class="control-group">
+                <label>Background Color</label>
+                <input type="color" id="color-bg" value="#ffffff">
+            </div>
+            <div class="control-group">
+                <label>Dot Style</label>
+                <select id="dot-style">
+                    <option value="square">Square (Classic)</option>
+                    <option value="dots">Dots (Modern)</option>
+                    <option value="rounded">Rounded (Smooth)</option>
+                    <option value="extra-rounded">Extra Rounded</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Upload Logo (Optional)</label>
+                <input type="file" id="logo-file" accept="image/*">
+            </div>
+        </div>
+
+        <button onclick="updateQR()" class="action-btn">Generate & Update QR</button>
+        <button onclick="downloadQR()" class="action-btn" style="background: transparent; border: 1px solid #555; margin-top: 5px;">Download Image</button>
 
         <div id="qr-result">
             <div id="qrcode"></div>
         </div>
     </div>
 
-    <footer style="margin-top: auto; padding: 20px; color: #666; font-size: 0.8rem;">
-        &copy; 2024 Mika Tools.
-    </footer>
+    <div class="bottom-nav">
+        <a href="index.html" class="back-btn-bottom">← Back Home</a>
+    </div>
+
+    <footer>&copy; 2024 Mika Tools.</footer>
 
     <script>
-        function generateQR() {
-            const text = document.getElementById("qr-text").value;
-            const qrContainer = document.getElementById("qrcode");
-            const resultBox = document.getElementById("qr-result");
-
-            if (!text) {
-                alert("Please enter a URL or Text!");
-                return;
+        // Initialize QR Code with Default Settings
+        const qrCode = new QRCodeStyling({
+            width: 250,
+            height: 250,
+            type: "svg",
+            data: "https://mikatools.com",
+            image: "",
+            dotsOptions: {
+                color: "#000000",
+                type: "square"
+            },
+            backgroundOptions: {
+                color: "#ffffff",
+            },
+            imageOptions: {
+                crossOrigin: "anonymous",
+                margin: 5
             }
+        });
 
-            qrContainer.innerHTML = ""; // আগের QR মুছে ফেলা
-            resultBox.style.display = "flex"; // বক্স দেখানো
+        // Show initial QR
+        qrCode.append(document.getElementById("qrcode"));
 
-            new QRCode(qrContainer, {
-                text: text,
-                width: 200,
-                height: 200,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
-            });
+        // Function to Update QR
+        function updateQR() {
+            const text = document.getElementById("qr-text").value || "https://mikatools.com";
+            const colorDots = document.getElementById("color-dots").value;
+            const colorBg = document.getElementById("color-bg").value;
+            const dotStyle = document.getElementById("dot-style").value;
+            const logoFile = document.getElementById("logo-file").files[0];
+
+            const options = {
+                data: text,
+                dotsOptions: {
+                    color: colorDots,
+                    type: dotStyle
+                },
+                backgroundOptions: {
+                    color: colorBg
+                }
+            };
+
+            // Handle Logo Upload
+            if (logoFile) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    options.image = e.target.result;
+                    qrCode.update(options);
+                };
+                reader.readAsDataURL(logoFile);
+            } else {
+                // If no new logo, check if we should keep old or clear? 
+                // For simplicity, we update other fields immediately
+                qrCode.update(options);
+            }
+        }
+
+        // Function to Download
+        function downloadQR() {
+            qrCode.download({ name: "mika-qr-code", extension: "png" });
         }
     </script>
 
