@@ -3,96 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Mika Tools - Free Online Utilities for everyone.">
-    <title>Mika Tools - Free Online Utilities</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Mika Tools - Next Gen Utilities</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --radius: 12px; }
+        /* --- MIGHTY STYLE DARK THEME --- */
+        :root {
+            --bg-dark: #0a0a0c;
+            --text-white: #ffffff;
+            --text-gray: #a1a1aa;
+            --primary-gradient: linear-gradient(90deg, #ff0080, #7928ca); /* Neon Purple/Pink */
+            --card-bg: rgba(255, 255, 255, 0.05); /* Glass effect */
+            --glow: 0 0 20px rgba(121, 40, 202, 0.3);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
-        header { background: var(--card); border-bottom: 1px solid #e2e8f0; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
-        .nav-container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; cursor: pointer; }
-        .hero { text-align: center; padding: 4rem 1.5rem; background: linear-gradient(to bottom, #ffffff, #f1f5f9); }
-        .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
-        main { flex: 1; max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; width: 100%; }
-        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-        .tool-card { background: var(--card); padding: 2rem; border-radius: var(--radius); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); text-align: center; cursor: pointer; transition: transform 0.2s; border: 1px solid #e2e8f0; }
-        .tool-card:hover { transform: translateY(-5px); border-color: var(--primary); }
-        .tool-icon { font-size: 2.5rem; display: block; margin-bottom: 1rem; }
-        #active-tool-section { display: none; background: var(--card); padding: 2.5rem; border-radius: var(--radius); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
-        .back-btn { cursor: pointer; color: #64748b; margin-bottom: 1.5rem; display: inline-block; font-weight: 600; }
-        .back-btn:hover { color: var(--primary); }
-        footer { text-align: center; padding: 2rem; border-top: 1px solid #e2e8f0; background: var(--card); color: #64748b; margin-top: auto; }
-        .ad-space { width: 100%; height: 100px; background: #e2e8f0; margin: 2rem 0; display: flex; justify-content: center; align-items: center; border-radius: 8px; color: #94a3b8; border: 2px dashed #cbd5e1; }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; }
+        .logo span { background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* Hero Section (3D Animation Area) */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 1rem;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            max-width: 800px;
+        }
+
+        /* 3D Video Container */
+        .video-container {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            margin: 2rem 0;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--glow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* This keeps the video responsive */
+        .video-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Tools Grid */
+        .tools-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: #7928ca;
+            box-shadow: 0 10px 30px -10px rgba(121, 40, 202, 0.5);
+        }
+
+        .card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .card p { color: var(--text-gray); font-size: 0.95rem; }
+
+        /* Footer */
+        footer { text-align: center; padding: 3rem; color: var(--text-gray); border-top: 1px solid rgba(255,255,255,0.1); margin-top: 3rem;}
+
     </style>
 </head>
 <body>
-    <header>
-        <div class="nav-container">
-            <div class="logo" onclick="showHome()">⚡ Mika Tools</div>
-            <nav><a href="#" onclick="showHome()" style="text-decoration: none; color: var(--text);">Home</a></nav>
-        </div>
-    </header>
 
-    <div id="hero-section" class="hero">
-        <h1>Smart Tools for Everyone</h1>
-        <p>Mika Tools offers free, fast, and secure online utilities. No installation required.</p>
+    <nav>
+        <div class="logo">⚡ Mika<span>Tools</span></div>
+    </nav>
+
+    <div class="hero">
+        <h1>Supercharge your work <br> with <span style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Smart Tools.</span></h1>
+        <p style="color: #a1a1aa; font-size: 1.2rem; max-width: 600px;">
+            Fast, secure, and beautiful tools designed for the modern web.
+        </p>
+
+        <div class="video-container">
+             <div style="height: 300px; display:flex; align-items:center; justify-content:center; background: radial-gradient(circle, #302b63, #0f0c29);">
+                 <h2 style="color: rgba(255,255,255,0.5);">Your 3D Animation Will Go Here</h2>
+             </div>
+        </div>
     </div>
 
-    <main>
-        <div class="ad-space">Ad Space (Responsive)</div>
-
-        <div id="tools-gallery" class="tools-grid">
-            <div class="tool-card" onclick="loadTool('qrcode')">
-                <span class="tool-icon">📱</span>
-                <h3>QR Code Generator</h3>
-                <p>Create custom QR codes instantly.</p>
+    <div class="tools-section">
+        <div class="grid">
+            <div class="card">
+                <h3>📱 QR Generator</h3>
+                <p>Create stunning QR codes instantly with colors and logos.</p>
             </div>
-            <div class="tool-card" style="opacity: 0.6;">
-                <span class="tool-icon">⏳</span>
-                <h3>More Coming Soon</h3>
-                <p>We are adding new tools.</p>
+            <div class="card">
+                <h3>🔒 Secure Password</h3>
+                <p>Generate unbreakable passwords locally in your browser.</p>
+            </div>
+            <div class="card">
+                <h3>🚀 Speed Test</h3>
+                <p>Check your internet speed directly from here.</p>
             </div>
         </div>
+    </div>
 
-        <div id="active-tool-section">
-            <div class="back-btn" onclick="showHome()">← Back to All Tools</div>
-            <h2 id="tool-heading" style="margin-bottom: 1rem;">Tool Name</h2>
-            <div id="tool-workspace"></div>
-        </div>
-        
-        <div class="ad-space">Ad Space (Responsive)</div>
-    </main>
+    <footer>
+        &copy; 2024 Mika Tools. Crafted for the future.
+    </footer>
 
-    <footer><p>&copy; 2024 Mika Tools. All rights reserved.</p></footer>
-
-    <script>
-        const hero = document.getElementById('hero-section');
-        const gallery = document.getElementById('tools-gallery');
-        const activeSection = document.getElementById('active-tool-section');
-        const workspace = document.getElementById('tool-workspace');
-        const heading = document.getElementById('tool-heading');
-
-        function showHome() {
-            hero.style.display = 'block';
-            gallery.style.display = 'grid';
-            activeSection.style.display = 'none';
-        }
-
-        function loadTool(name) {
-            hero.style.display = 'none';
-            gallery.style.display = 'none';
-            activeSection.style.display = 'block';
-            
-            if(name === 'qrcode') {
-                heading.innerText = "QR Code Generator";
-                workspace.innerHTML = `<div style="text-align:center; padding:20px; background:#f1f5f9; border-radius:8px;">
-                    <h3>QR Code Tool Coming Next!</h3>
-                    <p>We will add the logic in the next step.</p>
-                </div>`;
-            }
-        }
-    </script>
 </body>
 </html>
