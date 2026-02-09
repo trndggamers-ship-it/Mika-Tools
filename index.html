@@ -18,21 +18,40 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         html {
-            scroll-behavior: smooth; /* ব্রাউজারের নিজস্ব স্মুথ স্ক্রলিং */
+            scroll-behavior: smooth;
+            scrollbar-width: thin; /* For Firefox */
+            scrollbar-color: #333 #050505; /* For Firefox */
         }
 
         body {
             background-color: #050505;
             color: var(--text-white);
             overflow-x: hidden;
+            overflow-y: auto; /* Force scroll */
         }
 
-        /* --- STABLE BACKGROUND SYSTEM --- */
-        /* ব্যাকগ্রাউন্ড এখন ফিক্সড থাকবে, নড়াচড়া করবে না */
+        /* --- CUSTOM DARK SCROLLBAR (Chrome, Edge, Safari) --- */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 5px;
+            border: 2px solid #050505; /* Padding effect */
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+
+        /* --- BACKGROUND SYSTEM --- */
         .bg-container {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
+            pointer-events: none; /* মোবাইলে স্ক্রলিংয়ে বাধা দেবে না */
         }
 
         .bg-layer {
@@ -40,26 +59,22 @@
             top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
-            opacity: 0; /* শুরুতে সব লুকানো */
-            transition: opacity 1.2s ease-in-out; /* স্মুথ ট্রানজিশন */
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
         }
 
-        /* ১. হোম ব্যাকগ্রাউন্ড */
         .bg-home {
             background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
                               url('https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2070&auto=format&fit=crop');
-            opacity: 1; /* শুরুতে এটি দেখা যাবে */
+            opacity: 1;
         }
 
-        /* ২. টুলস ব্যাকগ্রাউন্ড (আপনার আপলোড করা ছবি) */
         .bg-tools {
             background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), 
                               url('bg-tools.jpg.png'); 
         }
 
-        /* যখন ক্লাস একটিভ হবে তখন অপাসিটি ১ হবে */
         .bg-layer.active { opacity: 1; }
-
 
         /* --- NAVIGATION --- */
         nav {
@@ -69,13 +84,13 @@
             transition: 0.3s;
         }
         nav.scrolled { background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
-        
         .logo { font-size: 1.5rem; font-weight: 800; cursor: pointer; text-decoration: none; color: white; }
         .logo span { background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         /* --- SECTIONS --- */
         section {
-            min-height: 100vh; /* প্রতিটি সেকশন স্ক্রিনের সমান হবে */
+            min-height: 100vh; /* Fallback */
+            min-height: 100dvh; /* Mobile Modern Viewport */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -101,7 +116,7 @@
         /* SCROLL ANIMATION */
         .scroll-indicator {
             position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-            opacity: 0.7; animation: bounce 2s infinite;
+            opacity: 0.7; animation: bounce 2s infinite; pointer-events: none; /* টাচ ইভেন্টে সমস্যা করবে না */
         }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);} 40% {transform: translateX(-50%) translateY(-10px);} 60% {transform: translateX(-50%) translateY(-5px);} }
         .mouse { width: 30px; height: 50px; border: 2px solid #fff; border-radius: 20px; position: relative; }
@@ -109,7 +124,6 @@
 
         /* TOOLS SECTION */
         .tools-container { max-width: 1200px; width: 100%; }
-        
         .section-title {
             text-align: center; font-size: 2.5rem; margin-bottom: 3rem; font-weight: 700;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
@@ -126,6 +140,8 @@
             border: 1px solid var(--border-light);
             transition: 0.3s; cursor: pointer;
             box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+            /* মোবাইলে টাচ রেসপন্সের জন্য */
+            touch-action: manipulation;
         }
         .card:hover { transform: translateY(-10px); border-color: #ff0080; background: rgba(0,0,0,0.6); }
         .card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
@@ -133,7 +149,19 @@
 
         footer { text-align: center; padding: 2rem; color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-top: auto; }
 
-        @media (max-width: 768px) { .hero-title { font-size: 2.8rem; } }
+        /* --- MOBILE FIXES --- */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.8rem; }
+            /* মোবাইলে সেকশন হাইট ফিক্স যাতে স্ক্রল কাজ করে */
+            section {
+                min-height: auto; 
+                padding: 6rem 1.5rem 4rem 1.5rem; /* ন্যাভিগেশন বারের জন্য উপরে প্যাডিং */
+            }
+            /* প্রথম সেকশনটি ফুল স্ক্রিন থাকবে */
+            #home {
+                min-height: 100dvh; 
+            }
+        }
     </style>
 </head>
 <body>
@@ -186,28 +214,24 @@
     </section>
 
     <script>
-        // Elements selection
         const homeSection = document.getElementById('home');
         const toolsSection = document.getElementById('tools');
         const bgHome = document.getElementById('bg-1');
         const bgTools = document.getElementById('bg-2');
         const navbar = document.getElementById('navbar');
 
-        // Observer Options (যখন পেজের ৫০% দেখা যাবে তখন কাজ করবে)
+        // Observer অপশন আপডেট করা হয়েছে মোবাইলের জন্য
         const options = {
-            threshold: 0.5
+            threshold: 0.2 // মোবাইলে ২০% দেখা গেলেই ব্যাকগ্রাউন্ড চেঞ্জ হবে
         };
 
-        // Observer Function
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     if (entry.target.id === 'home') {
-                        // হোম পেজ দেখা গেলে
                         bgHome.classList.add('active');
                         bgTools.classList.remove('active');
                     } else if (entry.target.id === 'tools') {
-                        // টুলস পেজ দেখা গেলে
                         bgTools.classList.add('active');
                         bgHome.classList.remove('active');
                     }
@@ -215,11 +239,9 @@
             });
         }, options);
 
-        // Start Observing
         observer.observe(homeSection);
         observer.observe(toolsSection);
 
-        // Navbar blur effect on scroll
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
                 navbar.classList.add('scrolled');
