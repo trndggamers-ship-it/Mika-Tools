@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator - Mika Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        /* --- SAME DESIGN STYLE --- */
+        :root {
+            --text-white: #ffffff;
+            --primary-gradient: linear-gradient(90deg, #ff0080, #7928ca);
+            --glass-bg: rgba(0, 0, 0, 0.6);
+            --border-light: rgba(255, 255, 255, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            background-color: #050505;
+            color: var(--text-white);
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+            
+            /* Background Image */
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)), 
+                              url('bg-tools.jpg.png'); /* আপনার ব্যাকগ্রাউন্ড ইমেজের নাম */
+            background-size: cover; background-position: center; background-attachment: fixed;
+        }
+
+        /* Navbar */
+        nav {
+            width: 90%; max-width: 1200px; margin-top: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 2rem; border-radius: 50px;
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
+            border: 1px solid var(--border-light);
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; text-decoration: none; color: white; }
+        .logo span { background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .back-btn {
+            text-decoration: none; color: white; font-weight: 600;
+            padding: 8px 20px; border-radius: 30px; border: 1px solid var(--border-light);
+            transition: 0.3s;
+        }
+        .back-btn:hover { background: white; color: black; }
+
+        /* Tool Container */
+        .tool-container {
+            margin-top: 5rem; width: 90%; max-width: 600px;
+            background: var(--glass-bg); backdrop-filter: blur(15px);
+            padding: 3rem; border-radius: 20px; border: 1px solid var(--border-light);
+            text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        input {
+            width: 100%; padding: 15px; margin: 20px 0;
+            background: rgba(0,0,0,0.5); border: 1px solid #333;
+            color: white; border-radius: 10px; font-size: 1rem; outline: none;
+        }
+        
+        .generate-btn {
+            width: 100%; padding: 15px; border: none; border-radius: 50px;
+            background: var(--primary-gradient); color: white; font-weight: bold; font-size: 1rem;
+            cursor: pointer; transition: 0.3s;
+        }
+        .generate-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(255, 0, 128, 0.4); }
+
+        /* QR Result Box */
+        #qr-result {
+            margin-top: 30px; padding: 20px; background: white; border-radius: 10px;
+            display: none; justify-content: center; align-items: center;
+            width: fit-content; margin-left: auto; margin-right: auto;
+        }
+
+        /* Mobile Fix */
+        @media (max-width: 768px) { .tool-container { padding: 2rem; margin-top: 3rem; } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">⚡ Mika<span>Tools</span></a>
+        <a href="index.html" class="back-btn">← Back Home</a>
+    </nav>
+
+    <div class="tool-container">
+        <h1 style="margin-bottom: 10px;">QR Code Generator</h1>
+        <p style="color: #ccc; font-size: 0.9rem;">Enter any URL or Text to generate a QR Code instantly.</p>
+
+        <input type="text" id="qr-text" placeholder="Example: https://google.com">
+        <button onclick="generateQR()" class="generate-btn">Generate QR Code</button>
+
+        <div id="qr-result">
+            <div id="qrcode"></div>
+        </div>
+    </div>
+
+    <footer style="margin-top: auto; padding: 20px; color: #666; font-size: 0.8rem;">
+        &copy; 2024 Mika Tools.
+    </footer>
+
+    <script>
+        function generateQR() {
+            const text = document.getElementById("qr-text").value;
+            const qrContainer = document.getElementById("qrcode");
+            const resultBox = document.getElementById("qr-result");
+
+            if (!text) {
+                alert("Please enter a URL or Text!");
+                return;
+            }
+
+            qrContainer.innerHTML = ""; // আগের QR মুছে ফেলা
+            resultBox.style.display = "flex"; // বক্স দেখানো
+
+            new QRCode(qrContainer, {
+                text: text,
+                width: 200,
+                height: 200,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+    </script>
+
+</body>
+</html>
