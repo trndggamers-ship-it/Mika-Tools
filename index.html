@@ -17,96 +17,99 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
-        html, body {
-            overscroll-behavior: none; /* ব্রাউজারের ডিফল্ট বাউন্স এফেক্ট বন্ধ করবে */
-            scroll-behavior: smooth;
+        html {
+            scroll-behavior: smooth; /* ব্রাউজারের নিজস্ব স্মুথ স্ক্রলিং */
         }
 
         body {
+            background-color: #050505;
             color: var(--text-white);
-            min-height: 100vh;
             overflow-x: hidden;
-            transition: background-image 0.8s ease-in-out; 
+        }
+
+        /* --- STABLE BACKGROUND SYSTEM --- */
+        /* ব্যাকগ্রাউন্ড এখন ফিক্সড থাকবে, নড়াচড়া করবে না */
+        .bg-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+        }
+
+        .bg-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
-            background-color: #050505;
+            opacity: 0; /* শুরুতে সব লুকানো */
+            transition: opacity 1.2s ease-in-out; /* স্মুথ ট্রানজিশন */
         }
 
-        /* --- BACKGROUNDS --- */
-        body.bg-home {
+        /* ১. হোম ব্যাকগ্রাউন্ড */
+        .bg-home {
             background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
                               url('https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2070&auto=format&fit=crop');
+            opacity: 1; /* শুরুতে এটি দেখা যাবে */
         }
 
-        body.bg-tools {
+        /* ২. টুলস ব্যাকগ্রাউন্ড (আপনার আপলোড করা ছবি) */
+        .bg-tools {
             background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), 
                               url('bg-tools.jpg.png'); 
         }
 
-        /* Navbar */
+        /* যখন ক্লাস একটিভ হবে তখন অপাসিটি ১ হবে */
+        .bg-layer.active { opacity: 1; }
+
+
+        /* --- NAVIGATION --- */
         nav {
-            position: absolute; top: 0; left: 0; width: 100%;
+            position: fixed; top: 0; left: 0; width: 100%;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 1.5rem 2rem; z-index: 50;
+            padding: 1.5rem 2rem; z-index: 100;
+            transition: 0.3s;
         }
-        .logo { font-size: 1.5rem; font-weight: 800; cursor: pointer; }
+        nav.scrolled { background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        
+        .logo { font-size: 1.5rem; font-weight: 800; cursor: pointer; text-decoration: none; color: white; }
         .logo span { background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* --- HERO SECTION (Home View) --- */
-        #home-view {
-            height: 100vh;
+        /* --- SECTIONS --- */
+        section {
+            min-height: 100vh; /* প্রতিটি সেকশন স্ক্রিনের সমান হবে */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
-            padding: 1rem;
+            padding: 2rem;
             position: relative;
-            opacity: 1;
-            transition: opacity 0.5s ease;
         }
 
+        /* HERO SECTION */
         .hero-title {
-            font-size: 4.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem;
+            font-size: 4.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; text-align: center;
             text-shadow: 0 4px 30px rgba(0,0,0,0.5);
         }
-        .hero-desc { font-size: 1.25rem; color: var(--text-gray); max-width: 600px; margin-bottom: 2.5rem; }
+        .hero-desc { font-size: 1.25rem; color: var(--text-gray); max-width: 600px; margin-bottom: 2.5rem; text-align: center; }
 
         .cta-btn {
-            padding: 14px 40px;
-            background: #ffffff; color: #000;
-            font-weight: 700; font-size: 1rem;
-            border-radius: 50px; text-decoration: none;
-            transition: 0.3s; cursor: pointer;
-            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+            padding: 14px 40px; background: #ffffff; color: #000;
+            font-weight: 700; font-size: 1rem; border-radius: 50px; text-decoration: none;
+            transition: 0.3s; cursor: pointer; box-shadow: 0 0 20px rgba(255,255,255,0.2);
         }
         .cta-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,255,255,0.5); }
 
-        /* Scroll Animation */
+        /* SCROLL ANIMATION */
         .scroll-indicator {
             position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-            cursor: pointer; opacity: 0.7;
+            opacity: 0.7; animation: bounce 2s infinite;
         }
-        .mouse {
-            width: 30px; height: 50px; border: 2px solid #fff; border-radius: 20px; position: relative;
-        }
-        .wheel {
-            width: 4px; height: 8px; background: #fff; position: absolute; top: 10px; left: 50%;
-            transform: translateX(-50%); border-radius: 2px; animation: scroll 1.5s infinite;
-        }
-        @keyframes scroll { 0% { top: 10px; opacity: 1; } 100% { top: 30px; opacity: 0; } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);} 40% {transform: translateX(-50%) translateY(-10px);} 60% {transform: translateX(-50%) translateY(-5px);} }
+        .mouse { width: 30px; height: 50px; border: 2px solid #fff; border-radius: 20px; position: relative; }
+        .wheel { width: 4px; height: 8px; background: #fff; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); border-radius: 2px; }
 
-        /* --- TOOLS SECTION --- */
-        #tools-view {
-            display: none;
-            padding: 8rem 2rem 4rem;
-            max-width: 1200px; margin: 0 auto;
-            min-height: 100vh;
-            opacity: 0;
-            transition: opacity 0.8s ease; /* Smooth fade in without shaking */
-        }
-
+        /* TOOLS SECTION */
+        .tools-container { max-width: 1200px; width: 100%; }
+        
         .section-title {
             text-align: center; font-size: 2.5rem; margin-bottom: 3rem; font-weight: 700;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
@@ -124,137 +127,104 @@
             transition: 0.3s; cursor: pointer;
             box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
         }
-
-        .card:hover {
-            transform: translateY(-10px); border-color: #ff0080; background: rgba(0,0,0,0.6);
-        }
-
+        .card:hover { transform: translateY(-10px); border-color: #ff0080; background: rgba(0,0,0,0.6); }
         .card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
         .card p { color: #cbd5e1; font-size: 0.95rem; }
 
-        footer { text-align: center; padding: 2rem; color: rgba(255,255,255,0.3); font-size: 0.8rem; width: 100%; }
+        footer { text-align: center; padding: 2rem; color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-top: auto; }
 
         @media (max-width: 768px) { .hero-title { font-size: 2.8rem; } }
     </style>
 </head>
-<body class="bg-home">
+<body>
 
-    <nav>
-        <div class="logo" onclick="goHome()">⚡ Mika<span>Tools</span></div>
+    <div class="bg-container">
+        <div id="bg-1" class="bg-layer bg-home active"></div>
+        <div id="bg-2" class="bg-layer bg-tools"></div>
+    </div>
+
+    <nav id="navbar">
+        <a href="#home" class="logo">⚡ Mika<span>Tools</span></a>
     </nav>
 
-    <section id="home-view">
+    <section id="home">
         <h1 class="hero-title">Supercharge your work <br> with <span style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Smart Tools.</span></h1>
         <p class="hero-desc">
             Fast, secure, and beautiful tools designed for the modern web. 
             No installation required.
         </p>
-        <div class="cta-btn" onclick="goToTools()">Explore Tools</div>
-        <div class="scroll-indicator" onclick="goToTools()">
+        <a href="#tools" class="cta-btn">Explore Tools</a>
+        
+        <div class="scroll-indicator">
             <div class="mouse"><div class="wheel"></div></div>
         </div>
     </section>
 
-    <section id="tools-view">
-        <h2 class="section-title">Select a Tool</h2>
-        <div class="grid">
-            <div class="card">
-                <h3>📱 QR Generator</h3>
-                <p>Create stunning QR codes instantly with colors and logos.</p>
-            </div>
-            <div class="card">
-                <h3>🔒 Secure Password</h3>
-                <p>Generate unbreakable passwords locally in your browser.</p>
-            </div>
-            <div class="card">
-                <h3>🚀 Speed Test</h3>
-                <p>Check your internet speed directly from here.</p>
-            </div>
-            <div class="card">
-                <h3>📂 Image Converter</h3>
-                <p>Convert JPG to PNG, PDF and more in seconds.</p>
+    <section id="tools">
+        <div class="tools-container">
+            <h2 class="section-title">Select a Tool</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>📱 QR Generator</h3>
+                    <p>Create stunning QR codes instantly with colors and logos.</p>
+                </div>
+                <div class="card">
+                    <h3>🔒 Secure Password</h3>
+                    <p>Generate unbreakable passwords locally in your browser.</p>
+                </div>
+                <div class="card">
+                    <h3>🚀 Speed Test</h3>
+                    <p>Check your internet speed directly from here.</p>
+                </div>
+                <div class="card">
+                    <h3>📂 Image Converter</h3>
+                    <p>Convert JPG to PNG, PDF and more in seconds.</p>
+                </div>
             </div>
         </div>
         <footer>&copy; 2024 Mika Tools</footer>
     </section>
 
     <script>
-        const body = document.body;
-        const homeView = document.getElementById('home-view');
-        const toolsView = document.getElementById('tools-view');
-        
-        let isViewTools = false;
-        let isTransitioning = false; // এটিই সেই "Anti-Shake" লক
+        // Elements selection
+        const homeSection = document.getElementById('home');
+        const toolsSection = document.getElementById('tools');
+        const bgHome = document.getElementById('bg-1');
+        const bgTools = document.getElementById('bg-2');
+        const navbar = document.getElementById('navbar');
 
-        function goToTools() {
-            if (isViewTools || isTransitioning) return;
-            
-            startTransition();
+        // Observer Options (যখন পেজের ৫০% দেখা যাবে তখন কাজ করবে)
+        const options = {
+            threshold: 0.5
+        };
 
-            // 1. হোম ফেড আউট
-            homeView.style.opacity = '0';
-            
-            setTimeout(() => {
-                homeView.style.display = 'none';
-                toolsView.style.display = 'block';
-                
-                // 2. ব্যাকগ্রাউন্ড এবং টুলস ফেড ইন
-                body.classList.remove('bg-home');
-                body.classList.add('bg-tools');
-                
-                // একটু সময় দিয়ে অপাসিটি বাড়ানো যাতে ঝাঁকুনি না লাগে
-                setTimeout(() => {
-                    toolsView.style.opacity = '1';
-                }, 50);
+        // Observer Function
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.id === 'home') {
+                        // হোম পেজ দেখা গেলে
+                        bgHome.classList.add('active');
+                        bgTools.classList.remove('active');
+                    } else if (entry.target.id === 'tools') {
+                        // টুলস পেজ দেখা গেলে
+                        bgTools.classList.add('active');
+                        bgHome.classList.remove('active');
+                    }
+                }
+            });
+        }, options);
 
-                window.scrollTo(0,0);
-                isViewTools = true;
-            }, 500); // 0.5 সেকেন্ড সময় নেবে ট্রানজিশন
-        }
+        // Start Observing
+        observer.observe(homeSection);
+        observer.observe(toolsSection);
 
-        function goHome() {
-            if (!isViewTools || isTransitioning) return;
-
-            startTransition();
-
-            // 1. টুলস ফেড আউট
-            toolsView.style.opacity = '0';
-            
-            setTimeout(() => {
-                toolsView.style.display = 'none';
-                homeView.style.display = 'flex';
-                
-                // 2. ব্যাকগ্রাউন্ড এবং হোম ফেড ইন
-                body.classList.remove('bg-tools');
-                body.classList.add('bg-home');
-                
-                setTimeout(() => {
-                    homeView.style.opacity = '1';
-                }, 50);
-
-                window.scrollTo(0,0);
-                isViewTools = false;
-            }, 500);
-        }
-
-        // ট্রানজিশন লক টাইমার (১.২ সেকেন্ডের জন্য স্ক্রল বন্ধ রাখবে)
-        function startTransition() {
-            isTransitioning = true;
-            setTimeout(() => {
-                isTransitioning = false;
-            }, 1200);
-        }
-
-        // মাউস হুইল কন্ট্রোলার (আপ এবং ডাউন)
-        window.addEventListener('wheel', (event) => {
-            if (isTransitioning) return; // কাজ চললে নতুন কমান্ড নেবে না
-
-            if (!isViewTools && event.deltaY > 30) {
-                // নিচে স্ক্রল করলে টুলস পেজে যাবে
-                goToTools();
-            } else if (isViewTools && event.deltaY < -30 && window.scrollY <= 10) {
-                // উপরে স্ক্রল করলে এবং পেজের একদম টপে থাকলে হোমে যাবে
-                goHome();
+        // Navbar blur effect on scroll
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
             }
         });
     </script>
