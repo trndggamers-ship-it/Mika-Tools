@@ -17,6 +17,11 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
+        html, body {
+            overscroll-behavior: none; /* ব্রাউজারের ডিফল্ট বাউন্স এফেক্ট বন্ধ করবে */
+            scroll-behavior: smooth;
+        }
+
         body {
             color: var(--text-white);
             min-height: 100vh;
@@ -29,14 +34,11 @@
         }
 
         /* --- BACKGROUNDS --- */
-        
-        /* হোমপেজ ব্যাকগ্রাউন্ড */
         body.bg-home {
             background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
                               url('https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2070&auto=format&fit=crop');
         }
 
-        /* টুলস পেজ ব্যাকগ্রাউন্ড (আপনার ফাইলের নাম অনুযায়ী আপডেট করা হলো) */
         body.bg-tools {
             background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), 
                               url('bg-tools.jpg.png'); 
@@ -61,6 +63,8 @@
             text-align: center;
             padding: 1rem;
             position: relative;
+            opacity: 1;
+            transition: opacity 0.5s ease;
         }
 
         .hero-title {
@@ -79,30 +83,19 @@
         }
         .cta-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,255,255,0.5); }
 
-        /* --- MOUSE SCROLL ANIMATION --- */
+        /* Scroll Animation */
         .scroll-indicator {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            cursor: pointer;
-            opacity: 0.7;
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            cursor: pointer; opacity: 0.7;
         }
         .mouse {
-            width: 30px; height: 50px;
-            border: 2px solid #fff; border-radius: 20px;
-            position: relative;
+            width: 30px; height: 50px; border: 2px solid #fff; border-radius: 20px; position: relative;
         }
         .wheel {
-            width: 4px; height: 8px; background: #fff;
-            position: absolute; top: 10px; left: 50%;
-            transform: translateX(-50%); border-radius: 2px;
-            animation: scroll 1.5s infinite;
+            width: 4px; height: 8px; background: #fff; position: absolute; top: 10px; left: 50%;
+            transform: translateX(-50%); border-radius: 2px; animation: scroll 1.5s infinite;
         }
-        @keyframes scroll {
-            0% { top: 10px; opacity: 1; }
-            100% { top: 30px; opacity: 0; }
-        }
+        @keyframes scroll { 0% { top: 10px; opacity: 1; } 100% { top: 30px; opacity: 0; } }
 
         /* --- TOOLS SECTION --- */
         #tools-view {
@@ -110,10 +103,9 @@
             padding: 8rem 2rem 4rem;
             max-width: 1200px; margin: 0 auto;
             min-height: 100vh;
-            animation: fadeIn 1s ease-in-out;
+            opacity: 0;
+            transition: opacity 0.8s ease; /* Smooth fade in without shaking */
         }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .section-title {
             text-align: center; font-size: 2.5rem; margin-bottom: 3rem; font-weight: 700;
@@ -140,13 +132,8 @@
         .card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
         .card p { color: #cbd5e1; font-size: 0.95rem; }
 
-        /* Footer (Updated: No Copyright) */
-        footer {
-            text-align: center; padding: 2rem; color: rgba(255,255,255,0.3); font-size: 0.8rem;
-            width: 100%;
-        }
+        footer { text-align: center; padding: 2rem; color: rgba(255,255,255,0.3); font-size: 0.8rem; width: 100%; }
 
-        /* Responsive */
         @media (max-width: 768px) { .hero-title { font-size: 2.8rem; } }
     </style>
 </head>
@@ -163,11 +150,8 @@
             No installation required.
         </p>
         <div class="cta-btn" onclick="goToTools()">Explore Tools</div>
-        
         <div class="scroll-indicator" onclick="goToTools()">
-            <div class="mouse">
-                <div class="wheel"></div>
-            </div>
+            <div class="mouse"><div class="wheel"></div></div>
         </div>
     </section>
 
@@ -198,30 +182,79 @@
         const body = document.body;
         const homeView = document.getElementById('home-view');
         const toolsView = document.getElementById('tools-view');
+        
         let isViewTools = false;
+        let isTransitioning = false; // এটিই সেই "Anti-Shake" লক
 
         function goToTools() {
-            if (isViewTools) return;
-            isViewTools = true;
-            homeView.style.display = 'none';
-            toolsView.style.display = 'block';
-            body.classList.remove('bg-home');
-            body.classList.add('bg-tools');
-            window.scrollTo(0,0);
+            if (isViewTools || isTransitioning) return;
+            
+            startTransition();
+
+            // 1. হোম ফেড আউট
+            homeView.style.opacity = '0';
+            
+            setTimeout(() => {
+                homeView.style.display = 'none';
+                toolsView.style.display = 'block';
+                
+                // 2. ব্যাকগ্রাউন্ড এবং টুলস ফেড ইন
+                body.classList.remove('bg-home');
+                body.classList.add('bg-tools');
+                
+                // একটু সময় দিয়ে অপাসিটি বাড়ানো যাতে ঝাঁকুনি না লাগে
+                setTimeout(() => {
+                    toolsView.style.opacity = '1';
+                }, 50);
+
+                window.scrollTo(0,0);
+                isViewTools = true;
+            }, 500); // 0.5 সেকেন্ড সময় নেবে ট্রানজিশন
         }
 
         function goHome() {
-            isViewTools = false;
-            toolsView.style.display = 'none';
-            homeView.style.display = 'flex';
-            body.classList.remove('bg-tools');
-            body.classList.add('bg-home');
+            if (!isViewTools || isTransitioning) return;
+
+            startTransition();
+
+            // 1. টুলস ফেড আউট
+            toolsView.style.opacity = '0';
+            
+            setTimeout(() => {
+                toolsView.style.display = 'none';
+                homeView.style.display = 'flex';
+                
+                // 2. ব্যাকগ্রাউন্ড এবং হোম ফেড ইন
+                body.classList.remove('bg-tools');
+                body.classList.add('bg-home');
+                
+                setTimeout(() => {
+                    homeView.style.opacity = '1';
+                }, 50);
+
+                window.scrollTo(0,0);
+                isViewTools = false;
+            }, 500);
         }
 
-        // Mouse Wheel Detection
+        // ট্রানজিশন লক টাইমার (১.২ সেকেন্ডের জন্য স্ক্রল বন্ধ রাখবে)
+        function startTransition() {
+            isTransitioning = true;
+            setTimeout(() => {
+                isTransitioning = false;
+            }, 1200);
+        }
+
+        // মাউস হুইল কন্ট্রোলার (আপ এবং ডাউন)
         window.addEventListener('wheel', (event) => {
-            if (event.deltaY > 50 && !isViewTools) {
+            if (isTransitioning) return; // কাজ চললে নতুন কমান্ড নেবে না
+
+            if (!isViewTools && event.deltaY > 30) {
+                // নিচে স্ক্রল করলে টুলস পেজে যাবে
                 goToTools();
+            } else if (isViewTools && event.deltaY < -30 && window.scrollY <= 10) {
+                // উপরে স্ক্রল করলে এবং পেজের একদম টপে থাকলে হোমে যাবে
+                goHome();
             }
         });
     </script>
