@@ -14,11 +14,18 @@
             --glass: rgba(255, 255, 255, 0.05);
             --border: rgba(255, 255, 255, 0.1);
             --text: #ffffff;
-            --radius-box: 30px; /* বড় কার্ডের জন্য রাউন্ড */
-            --radius-input: 50px; /* ইনপুট ও বাটনে ক্যাপসুল শেপ */
+            --radius-box: 30px;
+            --radius-pill: 50px;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        /* --- 1. CUSTOM SCROLLBAR (FIXED) --- */
+        html { scrollbar-width: thin; scrollbar-color: #444 #050505; }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; border: 2px solid #050505; }
+        ::-webkit-scrollbar-thumb:hover { background: #666; }
 
         body {
             background-color: #050505; color: var(--text); min-height: 100vh;
@@ -27,11 +34,11 @@
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- HEADER --- */
+        /* Navbar */
         nav {
             width: 95%; max-width: 1300px; margin-top: 20px;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem 2rem; border-radius: var(--radius-input);
+            padding: 1rem 2rem; border-radius: var(--radius-pill);
             background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
             border: 1px solid var(--border); z-index: 10;
         }
@@ -40,111 +47,100 @@
 
         .bmc-btn {
             display: flex; align-items: center; gap: 8px;
-            background: rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: var(--radius-input);
+            background: rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: var(--radius-pill);
             text-decoration: none; color: #fff; font-size: 0.9rem; font-weight: 600;
             border: 1px solid rgba(255, 255, 255, 0.2); transition: 0.3s;
         }
         .bmc-btn:hover { background: #FFDD00; color: #000; border-color: #FFDD00; box-shadow: 0 0 15px rgba(255, 221, 0, 0.4); }
         .bmc-icon { width: 20px; }
 
-        /* --- MAIN STUDIO LAYOUT --- */
+        /* Main Layout */
         .studio-container {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 30px;
-            width: 95%; max-width: 1200px;
-            margin: 40px auto;
+            display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px;
+            width: 95%; max-width: 1200px; margin: 40px auto;
         }
 
-        /* Left Panel: Editor */
+        /* Editor Panel */
         .editor-panel {
             background: var(--glass); backdrop-filter: blur(20px);
             padding: 35px; border-radius: var(--radius-box); border: 1px solid var(--border);
             display: flex; flex-direction: column; gap: 25px;
         }
+        .section-title { font-size: 1rem; font-weight: 600; color: #aaa; margin-bottom: 15px; padding-left: 5px; text-transform: uppercase; letter-spacing: 1px; }
 
-        .section-title { font-size: 1.1rem; font-weight: 600; color: #aaa; margin-bottom: 15px; padding-left: 10px; }
-
-        /* ROUNDED INPUTS styling */
+        /* Inputs */
         .input-group label { display: block; font-size: 0.9rem; margin-bottom: 8px; color: #ccc; margin-left: 10px; }
-        
         input[type="text"], select {
-            width: 100%; padding: 15px 25px; /* Text যাতে রাউন্ডের সাথে লেগে না যায় */
-            background: rgba(0,0,0,0.4);
-            border: 1px solid #444; 
-            border-radius: var(--radius-input); /* ক্যাপসুল শেপ */
-            color: white; outline: none; transition: 0.3s;
-            font-size: 1rem;
-            cursor: pointer;
+            width: 100%; padding: 15px 25px; background: rgba(0,0,0,0.4);
+            border: 1px solid #444; border-radius: var(--radius-pill);
+            color: white; outline: none; transition: 0.3s; font-size: 1rem; cursor: pointer;
         }
-        
-        /* File Input Customization */
-        input[type="file"] {
-            width: 100%; padding: 10px; 
-            background: rgba(0,0,0,0.4);
-            border: 1px dashed #555; 
-            border-radius: var(--radius-box); /* বড় রাউন্ড */
-            color: #aaa; cursor: pointer;
-        }
-
         input[type="text"]:focus, select:focus { border-color: var(--accent); background: rgba(0,0,0,0.6); }
 
-        /* Color Pickers Grid */
+        /* --- 2. ROUNDED COLOR PICKERS --- */
         .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        
-        input[type="color"] { 
-            width: 100%; height: 50px; border: none; background: none; cursor: pointer; 
-            border-radius: var(--radius-input); /* কালার বক্সও রাউন্ডেড */
-            padding: 0; overflow: hidden;
+        .color-wrapper {
+            position: relative; height: 50px; border-radius: var(--radius-pill); overflow: hidden; border: 1px solid #444;
         }
-        /* কালার পিকারের ভেতরের অংশ রাউন্ড করার জন্য */
-        ::-webkit-color-swatch-wrapper { padding: 0; }
-        ::-webkit-color-swatch { border: 1px solid #555; border-radius: var(--radius-input); }
+        input[type="color"] {
+            width: 150%; height: 150%; transform: translate(-25%, -25%); /* Stretch to hide default borders */
+            border: none; background: none; cursor: pointer; padding: 0;
+        }
 
-        /* Templates Buttons */
+        /* --- NEW TEMPLATES --- */
         .template-grid { display: flex; gap: 10px; flex-wrap: wrap; }
         .template-btn {
             padding: 10px 20px; background: #222; border: 1px solid #444; color: white;
-            border-radius: var(--radius-input); /* বাটনগুলোও গোল */
-            cursor: pointer; font-size: 0.9rem; transition: 0.2s;
+            border-radius: var(--radius-pill); cursor: pointer; font-size: 0.85rem; transition: 0.2s;
         }
         .template-btn:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
 
-        /* Right Panel: Preview */
+        /* --- 3. CUSTOM FILE UPLOAD (ROUNDED) --- */
+        .file-upload-wrapper { position: relative; width: 100%; }
+        #logo-file { display: none; } /* Hide default ugly input */
+        .custom-file-label {
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            width: 100%; padding: 15px; background: rgba(0,0,0,0.4);
+            border: 1px dashed #666; border-radius: var(--radius-pill);
+            color: #aaa; cursor: pointer; transition: 0.3s;
+        }
+        .custom-file-label:hover { border-color: white; color: white; background: rgba(255,255,255,0.05); }
+
+        /* Preview Panel */
         .preview-panel {
             position: sticky; top: 20px; height: fit-content;
-            background: #ffffff;
-            border-radius: var(--radius-box); /* বড় রাউন্ডেড প্রিভিউ কার্ড */
-            padding: 40px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: #ffffff; border-radius: var(--radius-box);
+            padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center;
         }
 
-        #qrcode { margin: 20px 0; }
-        
+        /* --- 4. QR BACKGROUND ROUNDING --- */
+        #qrcode { 
+            margin: 20px 0; 
+            border-radius: 20px; /* প্রিভিউ রাউন্ডেড হবে */
+            overflow: hidden; /* চারকোণা ব্যাকগ্রাউন্ড কেটে ফেলবে */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
         .download-btn {
             width: 100%; padding: 18px; background: linear-gradient(90deg, #ff0080, #7928ca);
-            color: white; border: none; 
-            border-radius: var(--radius-input); /* রাউন্ডেড বাটন */
-            font-weight: 700; font-size: 1.1rem;
-            cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(255, 0, 128, 0.3);
+            color: white; border: none; border-radius: var(--radius-pill);
+            font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(255, 0, 128, 0.3); margin-top: 15px;
         }
         .download-btn:hover { transform: scale(1.02); }
-        
-        #file-ext { margin-bottom: 15px; background: #f0f0f0; color: #333; border: none; }
+        #file-ext { margin-bottom: 0; background: #f0f0f0; color: #333; border: none; }
 
-        /* Bottom Back Button */
         .bottom-nav { margin: 40px 0; text-align: center; width: 100%; }
         .back-btn-bottom {
             text-decoration: none; color: #aaa; font-weight: 600; padding: 12px 35px;
-            border: 1px solid #444; border-radius: var(--radius-input); transition: 0.3s;
+            border: 1px solid #444; border-radius: var(--radius-pill); transition: 0.3s;
         }
         .back-btn-bottom:hover { background: white; color: black; }
 
-        /* Mobile Responsive */
         @media (max-width: 800px) {
             .studio-container { grid-template-columns: 1fr; }
-            .preview-panel { order: -1; margin-bottom: 20px; padding: 20px; }
+            .preview-panel { order: -1; margin-bottom: 20px; }
         }
     </style>
 </head>
@@ -161,7 +157,7 @@
     <div class="studio-container">
         
         <div class="editor-panel">
-            <h2 style="margin-bottom: 10px; margin-left: 10px;">Design Your QR Code</h2>
+            <h2 style="margin-left: 10px;">Design QR Code</h2>
             
             <div class="input-group">
                 <label>Website URL or Text</label>
@@ -175,6 +171,9 @@
                     <button class="template-btn" onclick="setTemplate('modern')">Modern Blue</button>
                     <button class="template-btn" onclick="setTemplate('love')">Love Pink</button>
                     <button class="template-btn" onclick="setTemplate('leaf')">Nature Green</button>
+                    <button class="template-btn" onclick="setTemplate('neon')">Neon Dark</button>
+                    <button class="template-btn" onclick="setTemplate('gold')">Luxury Gold</button>
+                    <button class="template-btn" onclick="setTemplate('fire')">Fire Orange</button>
                 </div>
             </div>
 
@@ -183,11 +182,15 @@
                 <div class="color-grid">
                     <div class="input-group">
                         <label>Dots Color</label>
-                        <input type="color" id="color-dots" value="#000000" oninput="updateQR()">
+                        <div class="color-wrapper">
+                            <input type="color" id="color-dots" value="#000000" oninput="updateQR()">
+                        </div>
                     </div>
                     <div class="input-group">
                         <label>Background</label>
-                        <input type="color" id="color-bg" value="#ffffff" oninput="updateQR()">
+                        <div class="color-wrapper">
+                            <input type="color" id="color-bg" value="#ffffff" oninput="updateQR()">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -219,9 +222,11 @@
 
             <div>
                 <div class="section-title">Add Logo</div>
-                <div class="input-group">
+                <div class="file-upload-wrapper">
+                    <label for="logo-file" class="custom-file-label">
+                        <span>📂 Upload Logo (PNG/JPG)</span>
+                    </label>
                     <input type="file" id="logo-file" accept="image/*" onchange="handleLogo()">
-                    <p style="font-size: 0.8rem; color: #666; margin-top: 8px; margin-left: 10px;">Upload a PNG logo for best results.</p>
                 </div>
             </div>
 
@@ -229,18 +234,16 @@
 
         <div class="preview-panel">
             <h3 style="color: #333; margin-bottom: 20px;">Live Preview</h3>
-            
             <div id="qrcode"></div>
             
-            <div style="margin-top: 30px; width: 100%;">
+            <div style="width: 100%; margin-top: 20px;">
                 <select id="file-ext">
-                    <option value="png">Download as PNG</option>
-                    <option value="jpeg">Download as JPEG</option>
-                    <option value="svg">Download as SVG</option>
+                    <option value="png">Format: PNG</option>
+                    <option value="jpeg">Format: JPEG</option>
+                    <option value="svg">Format: SVG</option>
                 </select>
                 <button onclick="downloadQR()" class="download-btn">Download QR Code</button>
             </div>
-            <p style="color: #999; font-size: 0.8rem; margin-top: 15px;">High Quality • Vector Ready</p>
         </div>
 
     </div>
@@ -253,11 +256,7 @@
         let userLogo = "";
         
         const qrCode = new QRCodeStyling({
-            width: 300,
-            height: 300,
-            type: "svg",
-            data: "https://mikatools.com",
-            image: "",
+            width: 300, height: 300, type: "svg", data: "https://mikatools.com", image: "",
             dotsOptions: { color: "#000000", type: "square" },
             backgroundOptions: { color: "#ffffff" },
             imageOptions: { crossOrigin: "anonymous", margin: 10 }
@@ -283,7 +282,9 @@
 
         function handleLogo() {
             const file = document.getElementById("logo-file").files[0];
+            const label = document.querySelector('.custom-file-label span');
             if (file) {
+                label.innerText = "✅ " + file.name; // ফাইলের নাম দেখাবে
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     userLogo = e.target.result;
@@ -298,6 +299,10 @@
             else if (type === 'modern') setValues("#2563eb", "#ffffff", "dots", "extra-rounded");
             else if (type === 'love') setValues("#ff0080", "#ffe6f2", "rounded", "dot");
             else if (type === 'leaf') setValues("#10b981", "#ecfdf5", "classy", "extra-rounded");
+            // NEW TEMPLATES
+            else if (type === 'neon') setValues("#00ffcc", "#000000", "dots", "extra-rounded");
+            else if (type === 'gold') setValues("#d4af37", "#1a1a1a", "classy", "dot");
+            else if (type === 'fire') setValues("#ff4500", "#fff5e6", "rounded", "square");
         }
 
         function setValues(dotCol, bgCol, dStyle, cStyle) {
