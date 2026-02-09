@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pro QR Studio - Mika Tools</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
@@ -12,7 +12,6 @@
             --primary: #2563eb;
             --accent: #ff0080;
             --glass: rgba(255, 255, 255, 0.05);
-            --glass-mobile: rgba(0, 0, 0, 0.8);
             --border: rgba(255, 255, 255, 0.1);
             --text: #ffffff;
             --radius-box: 30px;
@@ -21,11 +20,12 @@
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
-        /* Custom Scrollbar */
+        /* --- 1. CUSTOM SCROLLBAR (FIXED) --- */
         html { scrollbar-width: thin; scrollbar-color: #444 #050505; }
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; border: 2px solid #050505; }
+        ::-webkit-scrollbar-thumb:hover { background: #666; }
 
         body {
             background-color: #050505; color: var(--text); min-height: 100vh;
@@ -38,96 +38,98 @@
         nav {
             width: 95%; max-width: 1300px; margin-top: 20px;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem 1.5rem; border-radius: var(--radius-pill);
+            padding: 1rem 2rem; border-radius: var(--radius-pill);
             background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
             border: 1px solid var(--border); z-index: 10;
         }
-        .logo { font-size: 1.4rem; font-weight: 800; text-decoration: none; color: white; }
+        .logo { font-size: 1.5rem; font-weight: 800; text-decoration: none; color: white; }
         .logo span { background: linear-gradient(90deg, #ff0080, #7928ca); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .bmc-btn {
             display: flex; align-items: center; gap: 8px;
-            background: rgba(255, 255, 255, 0.1); padding: 8px 16px; border-radius: var(--radius-pill);
-            text-decoration: none; color: #fff; font-size: 0.85rem; font-weight: 600;
+            background: rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: var(--radius-pill);
+            text-decoration: none; color: #fff; font-size: 0.9rem; font-weight: 600;
             border: 1px solid rgba(255, 255, 255, 0.2); transition: 0.3s;
         }
-        .bmc-btn:hover { background: #FFDD00; color: #000; border-color: #FFDD00; }
-        .bmc-icon { width: 18px; }
+        .bmc-btn:hover { background: #FFDD00; color: #000; border-color: #FFDD00; box-shadow: 0 0 15px rgba(255, 221, 0, 0.4); }
+        .bmc-icon { width: 20px; }
 
-        /* --- MAIN LAYOUT --- */
+        /* Main Layout */
         .studio-container {
             display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px;
-            width: 95%; max-width: 1200px; margin: 30px auto;
+            width: 95%; max-width: 1200px; margin: 40px auto;
         }
 
-        /* --- EDITOR PANEL --- */
+        /* Editor Panel */
         .editor-panel {
             background: var(--glass); backdrop-filter: blur(20px);
-            padding: 30px; border-radius: var(--radius-box); border: 1px solid var(--border);
+            padding: 35px; border-radius: var(--radius-box); border: 1px solid var(--border);
             display: flex; flex-direction: column; gap: 25px;
         }
-        .section-title { font-size: 0.9rem; font-weight: 700; color: #aaa; margin-bottom: 12px; padding-left: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .section-title { font-size: 1rem; font-weight: 600; color: #aaa; margin-bottom: 15px; padding-left: 5px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* --- CUSTOM INPUTS & DROPDOWNS --- */
-        .input-group label { display: block; font-size: 0.9rem; margin-bottom: 8px; color: #ddd; margin-left: 10px; }
-        
+        /* Inputs */
+        .input-group label { display: block; font-size: 0.9rem; margin-bottom: 8px; color: #ccc; margin-left: 10px; }
         input[type="text"], select {
-            width: 100%; padding: 16px 25px; 
-            background: rgba(0,0,0,0.5);
+            width: 100%; padding: 15px 25px; background: rgba(0,0,0,0.4);
             border: 1px solid #444; border-radius: var(--radius-pill);
             color: white; outline: none; transition: 0.3s; font-size: 1rem; cursor: pointer;
-            
-            /* DROPDOWN MAGIC: Removing default arrow & adding custom one */
-            appearance: none; -webkit-appearance: none; -moz-appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 20px center;
-            background-size: 12px;
         }
-        
-        input[type="text"]:focus, select:focus { border-color: var(--accent); background: rgba(0,0,0,0.7); box-shadow: 0 0 15px rgba(255, 0, 128, 0.2); }
+        input[type="text"]:focus, select:focus { border-color: var(--accent); background: rgba(0,0,0,0.6); }
 
-        /* Color Pickers (Round) */
-        .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .color-wrapper { position: relative; height: 55px; border-radius: var(--radius-pill); overflow: hidden; border: 1px solid #444; }
-        input[type="color"] { width: 150%; height: 150%; transform: translate(-25%, -25%); border: none; background: none; cursor: pointer; padding: 0; }
+        /* --- 2. ROUNDED COLOR PICKERS --- */
+        .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .color-wrapper {
+            position: relative; height: 50px; border-radius: var(--radius-pill); overflow: hidden; border: 1px solid #444;
+        }
+        input[type="color"] {
+            width: 150%; height: 150%; transform: translate(-25%, -25%); /* Stretch to hide default borders */
+            border: none; background: none; cursor: pointer; padding: 0;
+        }
 
-        /* Templates */
-        .template-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+        /* --- NEW TEMPLATES --- */
+        .template-grid { display: flex; gap: 10px; flex-wrap: wrap; }
         .template-btn {
-            padding: 10px 18px; background: #222; border: 1px solid #444; color: white;
+            padding: 10px 20px; background: #222; border: 1px solid #444; color: white;
             border-radius: var(--radius-pill); cursor: pointer; font-size: 0.85rem; transition: 0.2s;
         }
         .template-btn:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
 
-        /* File Upload */
+        /* --- 3. CUSTOM FILE UPLOAD (ROUNDED) --- */
         .file-upload-wrapper { position: relative; width: 100%; }
-        #logo-file { display: none; }
+        #logo-file { display: none; } /* Hide default ugly input */
         .custom-file-label {
             display: flex; justify-content: center; align-items: center; gap: 10px;
-            width: 100%; padding: 16px; background: rgba(0,0,0,0.5);
+            width: 100%; padding: 15px; background: rgba(0,0,0,0.4);
             border: 1px dashed #666; border-radius: var(--radius-pill);
             color: #aaa; cursor: pointer; transition: 0.3s;
         }
         .custom-file-label:hover { border-color: white; color: white; background: rgba(255,255,255,0.05); }
 
-        /* --- PREVIEW PANEL --- */
+        /* Preview Panel */
         .preview-panel {
             position: sticky; top: 20px; height: fit-content;
             background: #ffffff; border-radius: var(--radius-box);
-            padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6); text-align: center;
+            padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center;
         }
-        #qrcode { margin: 15px 0; border-radius: 15px; overflow: hidden; }
-        
+
+        /* --- 4. QR BACKGROUND ROUNDING --- */
+        #qrcode { 
+            margin: 20px 0; 
+            border-radius: 20px; /* প্রিভিউ রাউন্ডেড হবে */
+            overflow: hidden; /* চারকোণা ব্যাকগ্রাউন্ড কেটে ফেলবে */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
         .download-btn {
             width: 100%; padding: 18px; background: linear-gradient(90deg, #ff0080, #7928ca);
             color: white; border: none; border-radius: var(--radius-pill);
             font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
             box-shadow: 0 10px 20px rgba(255, 0, 128, 0.3); margin-top: 15px;
         }
-        .download-btn:active { transform: scale(0.98); }
-        #file-ext { margin-bottom: 0; background: #f4f4f4; color: #333; border: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); }
+        .download-btn:hover { transform: scale(1.02); }
+        #file-ext { margin-bottom: 0; background: #f0f0f0; color: #333; border: none; }
 
         .bottom-nav { margin: 40px 0; text-align: center; width: 100%; }
         .back-btn-bottom {
@@ -136,28 +138,9 @@
         }
         .back-btn-bottom:hover { background: white; color: black; }
 
-        /* --- MOBILE OPTIMIZATION --- */
         @media (max-width: 800px) {
-            nav { padding: 0.8rem 1rem; width: 95%; margin-top: 10px; }
-            .logo { font-size: 1.2rem; }
-            .bmc-text { display: none; } /* মোবাইলে শুধু কফির কাপ থাকবে */
-            .bmc-btn { padding: 8px; border-radius: 50%; } /* গোল বাটন */
-            
-            .studio-container { 
-                grid-template-columns: 1fr; 
-                margin: 20px auto; 
-                gap: 20px;
-            }
-            
-            /* Preview কে উপরে নিয়ে আসা */
-            .preview-panel { 
-                order: -1; 
-                position: relative; top: 0;
-                padding: 20px;
-            }
-            
-            .editor-panel { padding: 20px; }
-            input[type="text"], select { padding: 14px 20px; font-size: 0.95rem; }
+            .studio-container { grid-template-columns: 1fr; }
+            .preview-panel { order: -1; margin-bottom: 20px; }
         }
     </style>
 </head>
@@ -174,7 +157,7 @@
     <div class="studio-container">
         
         <div class="editor-panel">
-            <h2 style="margin-left: 5px;">Design QR Code</h2>
+            <h2 style="margin-left: 10px;">Design QR Code</h2>
             
             <div class="input-group">
                 <label>Website URL or Text</label>
@@ -185,12 +168,12 @@
                 <div class="section-title">Quick Templates</div>
                 <div class="template-grid">
                     <button class="template-btn" onclick="setTemplate('classic')">Classic</button>
-                    <button class="template-btn" onclick="setTemplate('modern')">Blue</button>
-                    <button class="template-btn" onclick="setTemplate('love')">Pink</button>
-                    <button class="template-btn" onclick="setTemplate('leaf')">Nature</button>
-                    <button class="template-btn" onclick="setTemplate('neon')">Neon</button>
-                    <button class="template-btn" onclick="setTemplate('gold')">Luxury</button>
-                    <button class="template-btn" onclick="setTemplate('fire')">Fire</button>
+                    <button class="template-btn" onclick="setTemplate('modern')">Modern Blue</button>
+                    <button class="template-btn" onclick="setTemplate('love')">Love Pink</button>
+                    <button class="template-btn" onclick="setTemplate('leaf')">Nature Green</button>
+                    <button class="template-btn" onclick="setTemplate('neon')">Neon Dark</button>
+                    <button class="template-btn" onclick="setTemplate('gold')">Luxury Gold</button>
+                    <button class="template-btn" onclick="setTemplate('fire')">Fire Orange</button>
                 </div>
             </div>
 
@@ -246,6 +229,7 @@
                     <input type="file" id="logo-file" accept="image/*" onchange="handleLogo()">
                 </div>
             </div>
+
         </div>
 
         <div class="preview-panel">
@@ -300,7 +284,7 @@
             const file = document.getElementById("logo-file").files[0];
             const label = document.querySelector('.custom-file-label span');
             if (file) {
-                label.innerText = "✅ " + file.name;
+                label.innerText = "✅ " + file.name; // ফাইলের নাম দেখাবে
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     userLogo = e.target.result;
@@ -315,6 +299,7 @@
             else if (type === 'modern') setValues("#2563eb", "#ffffff", "dots", "extra-rounded");
             else if (type === 'love') setValues("#ff0080", "#ffe6f2", "rounded", "dot");
             else if (type === 'leaf') setValues("#10b981", "#ecfdf5", "classy", "extra-rounded");
+            // NEW TEMPLATES
             else if (type === 'neon') setValues("#00ffcc", "#000000", "dots", "extra-rounded");
             else if (type === 'gold') setValues("#d4af37", "#1a1a1a", "classy", "dot");
             else if (type === 'fire') setValues("#ff4500", "#fff5e6", "rounded", "square");
