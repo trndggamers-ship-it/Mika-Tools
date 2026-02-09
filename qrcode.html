@@ -3,100 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro QR Generator - Mika Tools</title>
+    <title>Pro QR Studio - Mika Tools</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     
     <style>
         :root {
-            --text-white: #ffffff;
-            --primary-gradient: linear-gradient(90deg, #ff0080, #7928ca);
-            --glass-bg: rgba(0, 0, 0, 0.6);
-            --border-light: rgba(255, 255, 255, 0.1);
+            --primary: #2563eb;
+            --accent: #ff0080;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
         body {
-            background-color: #050505;
-            color: var(--text-white);
-            min-height: 100vh;
+            background-color: #050505; color: var(--text); min-height: 100vh;
+            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('bg-tools.jpg.png');
+            background-size: cover; background-attachment: fixed;
             display: flex; flex-direction: column; align-items: center;
-            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)), url('bg-tools.jpg.png');
-            background-size: cover; background-position: center; background-attachment: fixed;
         }
 
-        /* --- HEADER (BMC Button) --- */
+        /* --- HEADER --- */
         nav {
-            width: 90%; max-width: 1200px; margin-top: 20px;
+            width: 95%; max-width: 1300px; margin-top: 15px;
             display: flex; justify-content: space-between; align-items: center;
             padding: 1rem 2rem; border-radius: 50px;
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
-            border: 1px solid var(--border-light);
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
+            border: 1px solid var(--border); z-index: 10;
         }
         .logo { font-size: 1.5rem; font-weight: 800; text-decoration: none; color: white; }
-        .logo span { background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* BMC Button Style */
+        .logo span { background: linear-gradient(90deg, #ff0080, #7928ca); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* BMC Button */
         .bmc-btn {
             display: flex; align-items: center; gap: 8px;
             background: rgba(255, 255, 255, 0.1); padding: 8px 16px; border-radius: 30px;
             text-decoration: none; color: #fff; font-size: 0.9rem; font-weight: 600;
             border: 1px solid rgba(255, 255, 255, 0.2); transition: 0.3s;
         }
-        .bmc-btn:hover {
-            background: #FFDD00; color: #000; border-color: #FFDD00;
-            box-shadow: 0 0 15px rgba(255, 221, 0, 0.4);
-        }
-        .bmc-icon { width: 20px; height: 20px; }
+        .bmc-btn:hover { background: #FFDD00; color: #000; border-color: #FFDD00; box-shadow: 0 0 15px rgba(255, 221, 0, 0.4); }
+        .bmc-icon { width: 20px; }
 
-        /* --- TOOL CONTAINER --- */
-        .tool-container {
-            margin-top: 3rem; width: 95%; max-width: 800px;
-            background: var(--glass-bg); backdrop-filter: blur(15px);
-            padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-light);
-            text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column; gap: 20px;
+        /* --- MAIN STUDIO LAYOUT --- */
+        .studio-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr; /* বামে এডিটর বড়, ডানে প্রিভিউ ছোট */
+            gap: 30px;
+            width: 95%; max-width: 1200px;
+            margin: 40px auto;
         }
 
-        /* Controls Grid */
-        .controls-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left;
+        /* Left Panel: Editor */
+        .editor-panel {
+            background: var(--glass); backdrop-filter: blur(20px);
+            padding: 30px; border-radius: 20px; border: 1px solid var(--border);
+            display: flex; flex-direction: column; gap: 25px;
         }
-        .control-group label { font-size: 0.9rem; color: #ccc; margin-bottom: 5px; display: block; }
-        
+
+        .section-title { font-size: 1.1rem; font-weight: 600; color: #aaa; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+
+        /* Input Styling */
+        .input-group label { display: block; font-size: 0.9rem; margin-bottom: 8px; color: #ccc; }
         input[type="text"], select, input[type="file"] {
-            width: 100%; padding: 12px; background: rgba(0,0,0,0.5); 
-            border: 1px solid #444; color: white; border-radius: 10px; outline: none;
+            width: 100%; padding: 12px; background: rgba(0,0,0,0.4);
+            border: 1px solid #444; border-radius: 8px; color: white; outline: none; transition: 0.3s;
         }
-        input[type="color"] {
-            width: 100%; height: 45px; border: none; background: none; cursor: pointer;
+        input[type="text"]:focus { border-color: var(--accent); }
+
+        /* Color Pickers Grid */
+        .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input[type="color"] { width: 100%; height: 40px; border: none; background: none; cursor: pointer; border-radius: 8px; }
+
+        /* Right Panel: Preview (Sticky) */
+        .preview-panel {
+            position: sticky; top: 20px; height: fit-content;
+            background: #ffffff; /* White card for QR pop */
+            border-radius: 20px; padding: 30px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center;
         }
 
-        .action-btn {
-            width: 100%; padding: 15px; border: none; border-radius: 50px;
-            background: var(--primary-gradient); color: white; font-weight: bold; font-size: 1rem;
-            cursor: pointer; transition: 0.3s; margin-top: 10px;
+        #qrcode { margin: 20px 0; }
+        
+        .download-btn {
+            width: 100%; padding: 15px; background: linear-gradient(90deg, #ff0080, #7928ca);
+            color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(255, 0, 128, 0.3);
         }
-        .action-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(255, 0, 128, 0.4); }
+        .download-btn:hover { transform: scale(1.02); }
 
-        /* Result Area */
-        #qr-result {
-            margin-top: 20px; padding: 20px; background: white; border-radius: 15px;
-            display: flex; justify-content: center; align-items: center;
-            width: fit-content; margin-left: auto; margin-right: auto;
-            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        /* Templates (Mini Buttons) */
+        .template-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+        .template-btn {
+            padding: 8px 15px; background: #222; border: 1px solid #444; color: white;
+            border-radius: 20px; cursor: pointer; font-size: 0.8rem; transition: 0.2s;
         }
+        .template-btn:hover { background: var(--accent); border-color: var(--accent); }
 
-        /* --- BOTTOM BACK BUTTON --- */
-        .bottom-nav { margin: 40px 0; }
+        /* Bottom Back Button */
+        .bottom-nav { margin: 40px 0; text-align: center; width: 100%; }
         .back-btn-bottom {
-            text-decoration: none; color: #aaa; font-weight: 600; font-size: 1rem;
-            border: 1px solid #444; padding: 10px 25px; border-radius: 30px; transition: 0.3s;
+            text-decoration: none; color: #aaa; font-weight: 600; padding: 10px 30px;
+            border: 1px solid #444; border-radius: 30px; transition: 0.3s;
         }
         .back-btn-bottom:hover { background: white; color: black; }
 
-        /* Responsive */
-        @media (max-width: 600px) { .controls-grid { grid-template-columns: 1fr; } }
+        /* Mobile Responsive */
+        @media (max-width: 800px) {
+            .studio-container { grid-template-columns: 1fr; }
+            .preview-panel { order: -1; margin-bottom: 20px; } /* Mobile এ প্রিভিউ আগে দেখাবে */
+        }
     </style>
 </head>
 <body>
@@ -109,110 +127,177 @@
         </a>
     </nav>
 
-    <div class="tool-container">
-        <h1>Pro QR Generator</h1>
+    <div class="studio-container">
         
-        <input type="text" id="qr-text" placeholder="Enter Website URL or Text (e.g., https://mikatools.com)">
+        <div class="editor-panel">
+            <h2 style="margin-bottom: 10px;">Design Your QR Code</h2>
+            
+            <div class="input-group">
+                <label>Website URL or Text</label>
+                <input type="text" id="qr-text" placeholder="https://yourwebsite.com" oninput="updateQR()">
+            </div>
 
-        <div class="controls-grid">
-            <div class="control-group">
-                <label>Color (Dots)</label>
-                <input type="color" id="color-dots" value="#000000">
+            <div>
+                <div class="section-title">Quick Templates</div>
+                <div class="template-grid">
+                    <button class="template-btn" onclick="setTemplate('classic')">Classic</button>
+                    <button class="template-btn" onclick="setTemplate('modern')">Modern (Blue)</button>
+                    <button class="template-btn" onclick="setTemplate('love')">Love (Pink)</button>
+                    <button class="template-btn" onclick="setTemplate('leaf')">Nature (Green)</button>
+                </div>
             </div>
-            <div class="control-group">
-                <label>Background Color</label>
-                <input type="color" id="color-bg" value="#ffffff">
+
+            <div>
+                <div class="section-title">Colors</div>
+                <div class="color-grid">
+                    <div class="input-group">
+                        <label>Dots Color</label>
+                        <input type="color" id="color-dots" value="#000000" oninput="updateQR()">
+                    </div>
+                    <div class="input-group">
+                        <label>Background</label>
+                        <input type="color" id="color-bg" value="#ffffff" oninput="updateQR()">
+                    </div>
+                </div>
             </div>
-            <div class="control-group">
-                <label>Dot Style</label>
-                <select id="dot-style">
-                    <option value="square">Square (Classic)</option>
-                    <option value="dots">Dots (Modern)</option>
-                    <option value="rounded">Rounded (Smooth)</option>
-                    <option value="extra-rounded">Extra Rounded</option>
-                </select>
+
+            <div>
+                <div class="section-title">Shapes & Body</div>
+                <div class="color-grid">
+                    <div class="input-group">
+                        <label>Body Style</label>
+                        <select id="dot-style" onchange="updateQR()">
+                            <option value="square">Square</option>
+                            <option value="dots">Dots</option>
+                            <option value="rounded">Rounded</option>
+                            <option value="extra-rounded">Extra Rounded</option>
+                            <option value="classy">Classy</option>
+                            <option value="classy-rounded">Classy Rounded</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Corner Style</label>
+                        <select id="corner-style" onchange="updateQR()">
+                            <option value="square">Square</option>
+                            <option value="dot">Dot</option>
+                            <option value="extra-rounded">Rounded</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-            <div class="control-group">
-                <label>Upload Logo (Optional)</label>
-                <input type="file" id="logo-file" accept="image/*">
+
+            <div>
+                <div class="section-title">Add Logo</div>
+                <div class="input-group">
+                    <input type="file" id="logo-file" accept="image/*" onchange="handleLogo()">
+                    <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">Upload a PNG logo for best results.</p>
+                </div>
             </div>
+
         </div>
 
-        <button onclick="updateQR()" class="action-btn">Generate & Update QR</button>
-        <button onclick="downloadQR()" class="action-btn" style="background: transparent; border: 1px solid #555; margin-top: 5px;">Download Image</button>
-
-        <div id="qr-result">
+        <div class="preview-panel">
+            <h3 style="color: #333; margin-bottom: 10px;">Live Preview</h3>
             <div id="qrcode"></div>
+            
+            <div style="margin-top: 20px; width: 100%;">
+                <select id="file-ext" style="background: #f1f1f1; color: #333; margin-bottom: 10px;">
+                    <option value="png">Download as PNG</option>
+                    <option value="jpeg">Download as JPEG</option>
+                    <option value="svg">Download as SVG</option>
+                </select>
+                <button onclick="downloadQR()" class="download-btn">Download QR Code</button>
+            </div>
+            <p style="color: #888; font-size: 0.8rem; margin-top: 15px;">High Quality • Vector Ready</p>
         </div>
+
     </div>
 
     <div class="bottom-nav">
         <a href="index.html" class="back-btn-bottom">← Back Home</a>
     </div>
 
-    <footer>&copy; 2024 Mika Tools.</footer>
-
     <script>
-        // Initialize QR Code with Default Settings
+        // ডিফল্ট লোগো এবং ডাটা
+        let userLogo = "";
+        
         const qrCode = new QRCodeStyling({
-            width: 250,
-            height: 250,
+            width: 300,
+            height: 300,
             type: "svg",
             data: "https://mikatools.com",
             image: "",
-            dotsOptions: {
-                color: "#000000",
-                type: "square"
-            },
-            backgroundOptions: {
-                color: "#ffffff",
-            },
-            imageOptions: {
-                crossOrigin: "anonymous",
-                margin: 5
-            }
+            dotsOptions: { color: "#000000", type: "square" },
+            backgroundOptions: { color: "#ffffff" },
+            imageOptions: { crossOrigin: "anonymous", margin: 10 }
         });
 
-        // Show initial QR
+        // শুরুতে রেন্ডার করা
         qrCode.append(document.getElementById("qrcode"));
 
-        // Function to Update QR
+        // মেইন আপডেট ফাংশন (লাইভ আপডেট হবে)
         function updateQR() {
             const text = document.getElementById("qr-text").value || "https://mikatools.com";
             const colorDots = document.getElementById("color-dots").value;
             const colorBg = document.getElementById("color-bg").value;
             const dotStyle = document.getElementById("dot-style").value;
-            const logoFile = document.getElementById("logo-file").files[0];
+            const cornerStyle = document.getElementById("corner-style").value;
 
-            const options = {
+            qrCode.update({
                 data: text,
                 dotsOptions: {
                     color: colorDots,
                     type: dotStyle
                 },
+                cornersSquareOptions: {
+                    type: cornerStyle,
+                    color: colorDots // কর্নারের কালার ডটের সাথে মিলবে
+                },
                 backgroundOptions: {
                     color: colorBg
-                }
-            };
+                },
+                image: userLogo
+            });
+        }
 
-            // Handle Logo Upload
-            if (logoFile) {
+        // লোগো হ্যান্ডলিং
+        function handleLogo() {
+            const file = document.getElementById("logo-file").files[0];
+            if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    options.image = e.target.result;
-                    qrCode.update(options);
+                    userLogo = e.target.result;
+                    updateQR();
                 };
-                reader.readAsDataURL(logoFile);
-            } else {
-                // If no new logo, check if we should keep old or clear? 
-                // For simplicity, we update other fields immediately
-                qrCode.update(options);
+                reader.readAsDataURL(file);
             }
         }
 
-        // Function to Download
+        // টেমপ্লেট ফাংশন (এক ক্লিকে স্টাইল চেঞ্জ)
+        function setTemplate(type) {
+            if (type === 'classic') {
+                setValues("#000000", "#ffffff", "square", "square");
+            } else if (type === 'modern') {
+                setValues("#2563eb", "#ffffff", "dots", "extra-rounded");
+            } else if (type === 'love') {
+                setValues("#ff0080", "#ffe6f2", "rounded", "dot");
+            } else if (type === 'leaf') {
+                setValues("#10b981", "#ecfdf5", "classy", "extra-rounded");
+            }
+        }
+
+        function setValues(dotCol, bgCol, dStyle, cStyle) {
+            document.getElementById("color-dots").value = dotCol;
+            document.getElementById("color-bg").value = bgCol;
+            document.getElementById("dot-style").value = dStyle;
+            document.getElementById("corner-style").value = cStyle;
+            updateQR();
+        }
+
+        // ডাউনলোড ফাংশন
         function downloadQR() {
-            qrCode.download({ name: "mika-qr-code", extension: "png" });
+            const ext = document.getElementById("file-ext").value;
+            qrCode.download({ name: "mika-qr-code", extension: ext });
         }
     </script>
 
