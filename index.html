@@ -19,13 +19,12 @@
 
         html {
             scroll-behavior: smooth;
-            background-color: #050505; /* Fallback color */
             scrollbar-width: thin;
             scrollbar-color: #333 #050505;
         }
 
         body {
-            background-color: transparent; /* ফিক্স: বডি এখন ট্রান্সপারেন্ট যাতে ইমেজ উজ্জ্বল দেখায় */
+            background-color: #050505;
             color: var(--text-white);
             overflow-x: hidden;
             overflow-y: auto;
@@ -37,7 +36,7 @@
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 5px; border: 2px solid #050505; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-        /* --- BACKGROUND SYSTEM (BRIGHTER) --- */
+        /* --- BACKGROUND SYSTEM --- */
         .bg-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;
         }
@@ -47,8 +46,7 @@
             opacity: 0; transition: opacity 1.2s ease-in-out;
         }
         .bg-home {
-            /* ফিক্স: উপরের কালো শেড 0.6 থেকে কমিয়ে 0.3 করা হয়েছে যাতে হেডার কালো না দেখায় */
-            background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8)), 
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
                               url('https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2070&auto=format&fit=crop');
             opacity: 1;
         }
@@ -58,20 +56,33 @@
         }
         .bg-layer.active { opacity: 1; }
 
-        /* --- NAVIGATION --- */
+        /* --- FLOATING ROUNDED HEADER (Updated) --- */
         nav {
-            position: fixed; top: 0; left: 0; width: 100%;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 1.5rem 2rem; z-index: 100;
-            transition: background 0.3s, padding 0.3s;
-            background: transparent; /* শুরুতে একদম স্বচ্ছ */
+            position: fixed; 
+            top: 20px; /* উপর থেকে একটু নিচে নামানো হলো */
+            left: 50%;
+            transform: translateX(-50%); /* ঠিক মাঝখানে রাখার জন্য */
+            width: 90%; /* স্ক্রিনের ৯০% জায়গা নেবে */
+            max-width: 1200px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 1rem 2rem; 
+            z-index: 100;
+            transition: 0.3s;
+            
+            /* রাউন্ড শেপ এবং গ্লাস ইফেক্ট */
+            border-radius: 50px; /* চারকোনা সম্পূর্ণ রাউন্ড */
+            background: rgba(255, 255, 255, 0.05); /* হালকা স্বচ্ছ */
+            backdrop-filter: blur(10px); /* ব্লার ইফেক্ট */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* হালকা বর্ডার */
         }
-        /* স্ক্রল করলে ব্যাকগ্রাউন্ড আসবে */
+
+        /* স্ক্রল করলে হেডারটি একটু গাঢ় হবে */
         nav.scrolled { 
-            background: rgba(0,0,0,0.85); 
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            padding: 1rem 2rem; /* স্ক্রল করলে ন্যাভবার একটু স্লিম হবে */
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(0, 0, 0, 0.8); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-color: rgba(255, 255, 255, 0.2);
         }
         
         .logo { font-size: 1.5rem; font-weight: 800; cursor: pointer; text-decoration: none; color: white; }
@@ -141,11 +152,13 @@
         /* --- MOBILE FIXES --- */
         @media (max-width: 768px) {
             .hero-title { font-size: 2.8rem; }
-            section { min-height: auto; padding: 7rem 1.5rem 4rem 1.5rem; } /* হেডার স্পেস বাড়ানো হয়েছে */
+            section { min-height: auto; padding: 6rem 1.5rem 4rem 1.5rem; }
             #home { min-height: 100dvh; }
             .bmc-text { display: none; }
-            .bmc-btn { padding: 10px; border-radius: 50%; width: 40px; height: 40px; justify-content: center; }
-            .bmc-icon { width: 20px; height: 20px; margin: 0; }
+            .bmc-btn { padding: 8px; border-radius: 50%; }
+            
+            /* মোবাইলে হেডার একটু ছোট হবে */
+            nav { width: 95%; top: 10px; padding: 0.8rem 1.2rem; }
         }
     </style>
 </head>
@@ -229,7 +242,6 @@
         observer.observe(homeSection);
         observer.observe(toolsSection);
 
-        // স্ক্রল ডিটেকশন (৫০ পিক্সেলের নিচে নামলে কালো হবে)
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
                 navbar.classList.add('scrolled');
